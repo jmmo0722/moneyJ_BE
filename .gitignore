@@ -1,0 +1,73 @@
+### Build / Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+# 드문 케이스(대개 필요 없음): src 내부 build 폴더는 허용
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### Logs / Temp
+*.log
+logs/
+tmp/
+*.pid
+
+### Env / Local configs (민감정보는 절대 커밋 금지)
+.env
+setenv.sh
+database.sql
+docker-compose.yml
+
+# Spring 설정(예: 로컬 전용 프로필은 무시)
+src/main/resources/application-local.properties
+src/main/resources/application-local.yml
+# 예시 파일은 커밋
+!src/main/resources/application-example.properties
+!src/main/resources/application-example.yml
+
+### IntelliJ IDEA
+.idea/
+*.iml
+out/
+# (src 내부 out 폴더는 거의 없지만 예외 허용)
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### Eclipse
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code
+.vscode/
+
+### OS-specific
+.DS_Store
+Thumbs.db
+
+### Archives / Packages (필요 시 허용)
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+### JVM crash logs
+hs_err_pid*
+replay_pid*
