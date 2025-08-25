@@ -19,7 +19,9 @@ database.sql
 docker-compose.yml
 
 # Spring 설정(예: 로컬 전용/실제 민감정보는 무시)
-src/main/resources/application.yml
+application.yml
+application-*.yml
+application-*.properties
 src/main/resources/application.properties
 src/main/resources/application-*.yml
 src/main/resources/application-*.properties
