@@ -1,6 +1,5 @@
 package com.project.moneyj.trip.domain;
 
-import com.project.moneyj.user.domain.MemberRole;
 import com.project.moneyj.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package com.project.moneyj.user.domain;
+package com.project.moneyj.trip.domain;
 
 public enum MemberRole {
     OWNER, MEMBER
