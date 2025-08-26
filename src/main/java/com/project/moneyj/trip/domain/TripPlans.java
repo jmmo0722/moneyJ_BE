@@ -1,33 +1,38 @@
-package com.project.moneyj.domain;
+package com.project.moneyj.trip.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "trip_plans")
 public class TripPlans {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "trip_plans_id")
-    private Long id;
+    private Long trip_plans_id;
 
     private Integer membersCount;
     private String destination;
 
     private Integer duration;
-    private Date tripStartDate;
-    private Date tripEndDate;
+    private LocalDate tripStartDate;
+    private LocalDate tripEndDate;
 
     private Integer totalBudget;
     private Integer currentSavings;
 
-    private Date startDate;
-    private Date targetDate;
+    private LocalDate startDate;
+    private LocalDate targetDate;
 
     private String savingsPhrase;
     private String tripTip;
@@ -35,5 +40,4 @@ public class TripPlans {
     @OneToMany(mappedBy = "tripPlans", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TripMembers> tripMembersList = new ArrayList<>();
 
-    protected TripPlans(){}
 }
