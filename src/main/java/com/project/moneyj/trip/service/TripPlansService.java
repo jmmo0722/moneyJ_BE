@@ -2,6 +2,7 @@ package com.project.moneyj.trip.service;
 
 import com.project.moneyj.trip.domain.TripMembers;
 import com.project.moneyj.trip.domain.TripPlans;
+import com.project.moneyj.trip.dto.TripPlansListResponse;
 import com.project.moneyj.trip.dto.TripPlansRequestDTO;
 import com.project.moneyj.trip.dto.TripPlansResponseDTO;
 import com.project.moneyj.trip.repository.TripMembersRepository;
@@ -52,5 +53,14 @@ public class TripPlansService {
 
 
         return new TripPlansResponseDTO(saved.getTrip_plans_id(), "여행 플랜 생성 완료");
+    }
+
+    /**
+     * 여행 플랜 조회
+     */
+    public List<TripPlansListResponse> getUserTripPlans(Long userId) {
+        return tripPlansRepository.findAllByUserId(userId).stream()
+                .map(TripPlansListResponse::fromEntity)
+                .toList();
     }
 }
