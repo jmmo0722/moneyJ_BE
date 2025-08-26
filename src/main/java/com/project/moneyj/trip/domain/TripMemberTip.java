@@ -12,18 +12,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "trip_members_tip")
-public class TripMembersTIp {
+public class TripMemberTip {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long tripMembersTipId;
+    private Long tripMemberTipId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trip_plans_id")
-    private TripPlans tripPlans;
+    @JoinColumn(name = "trip_plan_id")
+    private TripPlan tripPlan;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trip_members_id")
-    private TripMembers tripMembers;
+    @JoinColumn(name = "trip_member_id")
+    private TripMember tripMember;
 
     @Enumerated(EnumType.STRING) @Column(nullable = false, length = 20)
     private ContentType contentType;

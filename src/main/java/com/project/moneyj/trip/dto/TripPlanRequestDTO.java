@@ -11,7 +11,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class TripPlansRequestDTO {
+public class TripPlanRequestDTO {
 
     @NotNull
     private String destination;

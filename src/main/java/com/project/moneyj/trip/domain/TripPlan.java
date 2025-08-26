@@ -16,10 +16,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "trip_plans")
-public class TripPlans {
+public class TripPlan {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long trip_plans_id;
+    private Long trip_plan_id;
 
     private Integer membersCount;
     private String destination;
@@ -37,7 +37,7 @@ public class TripPlans {
     private String savingsPhrase;
     private String tripTip;
 
-    @OneToMany(mappedBy = "tripPlans", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TripMembers> tripMembersList = new ArrayList<>();
+    @OneToMany(mappedBy = "tripPlan", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TripMember> tripMemberList = new ArrayList<>();
 
 }

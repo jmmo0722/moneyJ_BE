@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class TripPlansResponseDTO {
+public class TripPlanResponseDTO {
 
     private Long planId;
     private String message;

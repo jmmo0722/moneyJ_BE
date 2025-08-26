@@ -13,27 +13,27 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "trip_members")
-public class TripMembers {
+public class TripMember {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long trip_members_id;
+    private Long trip_member_id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trip_plans_id")
-    private TripPlans tripPlans;
+    @JoinColumn(name = "trip_plan_id")
+    private TripPlan tripPlan;
 
     @Enumerated(EnumType.STRING) @Column(nullable = false, length = 20)
     private MemberRole memberRole;
 
-    public void enrollTripMember(User user, TripPlans tripPlans){
+    public void enrollTripMember(User user, TripPlan tripPlan){
         this.user = user;
-        user.getTripMembersList().add(this);
+        user.getTripMemberList().add(this);
 
-        this.tripPlans = tripPlans;
-        tripPlans.getTripMembersList().add(this);
+        this.tripPlan = tripPlan;
+        tripPlan.getTripMemberList().add(this);
     }
 }
