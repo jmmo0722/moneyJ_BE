@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "trip_members_tip")
+@Table(name = "trip_member_tip")
 public class TripMemberTip {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
