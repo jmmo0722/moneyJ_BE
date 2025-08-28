@@ -4,10 +4,7 @@ import com.project.moneyj.auth.util.SecurityUtil;
 import com.project.moneyj.user.domain.User;
 import com.project.moneyj.user.dto.UserResponse;
 import com.project.moneyj.user.repository.UserRepository;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
