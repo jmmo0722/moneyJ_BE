@@ -1,18 +1,24 @@
-package com.project.moneyj.domain;
+package com.project.moneyj.transaction.domain;
 
+import com.project.moneyj.user.domain.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "transaction")
 public class Transaction {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "transaction_id")
-    private Long id;
+    private Long transaction_id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -37,7 +43,6 @@ public class Transaction {
 
     private LocalDate updateAt;
 
-    protected Transaction(){}
 
     // 연관관계 메소드
     public void addTransaction(User user){
