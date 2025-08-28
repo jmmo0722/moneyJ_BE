@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
-public class TripPlanListResponse {
+public class TripPlanListResponseDTO {
 
     private Long planId;
     private String destination;
@@ -17,8 +17,8 @@ public class TripPlanListResponse {
     private Integer totalBudget;
     private Integer currentSavings;
 
-    public static TripPlanListResponse fromEntity(TripPlan entity){
-        return new TripPlanListResponse(
+    public static TripPlanListResponseDTO fromEntity(TripPlan entity){
+        return new TripPlanListResponseDTO(
                 entity.getTrip_plan_id(),
                 entity.getDestination(),
                 entity.getTripStartDate(),

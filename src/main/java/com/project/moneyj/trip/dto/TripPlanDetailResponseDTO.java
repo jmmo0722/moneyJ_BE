@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class TripPlanDetailResponse {
+public class TripPlanDetailResponseDTO {
 
     private Long planId;
     private String destination;

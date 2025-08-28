@@ -1,10 +1,8 @@
 package com.project.moneyj.trip.service;
 
-import com.project.moneyj.trip.domain.ContentType;
 import com.project.moneyj.trip.domain.TripMember;
 import com.project.moneyj.trip.domain.TripPlan;
-import com.project.moneyj.trip.dto.TripPlanDetailResponse;
-import com.project.moneyj.trip.dto.TripPlanListResponse;
+import com.project.moneyj.trip.dto.TripPlanListResponseDTO;
 import com.project.moneyj.trip.dto.TripPlanRequestDTO;
 import com.project.moneyj.trip.dto.TripPlanResponseDTO;
 import com.project.moneyj.trip.repository.TripMemberRepository;
@@ -63,9 +61,9 @@ public class TripPlanService {
      * 여행 플랜 조회
      */
     @Transactional
-    public List<TripPlanListResponse> getUserTripPlans(Long userId) {
+    public List<TripPlanListResponseDTO> getUserTripPlans(Long userId) {
         return tripPlanRepository.findAllByUserId(userId).stream()
-                .map(TripPlanListResponse::fromEntity)
+                .map(TripPlanListResponseDTO::fromEntity)
                 .toList();
     }
 
