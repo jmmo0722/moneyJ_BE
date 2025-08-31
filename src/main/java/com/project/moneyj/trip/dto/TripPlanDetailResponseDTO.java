@@ -16,6 +16,10 @@ import java.util.List;
 @AllArgsConstructor
 public class TripPlanDetailResponseDTO {
 
+    /**
+     * 여행 플랜 상세 조회를 위한 응답 DTO
+     */
+
     private Long planId;
     private String country;
     private String city;

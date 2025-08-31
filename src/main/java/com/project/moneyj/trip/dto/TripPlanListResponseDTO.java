@@ -12,6 +12,10 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class TripPlanListResponseDTO {
 
+    /**
+     * 사용자별 여행 플랜 리스트 반환을 위한 응답 DTO
+     */
+
     private Long planId;
     private String country;
     private String city;

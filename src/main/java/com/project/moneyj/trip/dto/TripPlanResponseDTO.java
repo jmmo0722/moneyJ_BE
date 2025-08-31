@@ -9,6 +9,10 @@ import lombok.Data;
 @AllArgsConstructor
 public class TripPlanResponseDTO {
 
+    /**
+     * 여행 생성, 수정, 삭제 응답 DTO
+     */
+
     private Long planId;
     private String message;
 }

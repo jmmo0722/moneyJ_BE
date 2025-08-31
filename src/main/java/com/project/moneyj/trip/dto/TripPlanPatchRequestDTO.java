@@ -1,11 +1,9 @@
 package com.project.moneyj.trip.dto;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,44 +11,27 @@ import java.util.List;
 @Data
 @Builder
 @AllArgsConstructor
-public class TripPlanRequestDTO {
+@NoArgsConstructor
+public class TripPlanPatchRequestDTO {
 
     /**
-     * 여행 플랜 생성 요청 DTO
+     * 여행 플랜 수정을 위한 DTO
+     * 모든 필드가 null 일 수 있으므로 @NotNull 사용 X.
      */
 
-    @NotNull
     private String country;
-    @NotNull
     private String city;
 
-    @NotNull
     private Integer flight_cost;
-    @NotNull
     private Integer accommodation_cost;
-    @NotNull
     private Integer food_cost;
-    @NotNull
     private Integer other_cost;
 
-    @Min(1)
-    private Integer duration;
-
-    @NotNull
     private LocalDate tripStartDate;
-
-    @NotNull
     private LocalDate tripEndDate;
 
-    @NotNull @Positive
     private Integer totalBudget;
-
-    @NotNull
-    private LocalDate startDate;
-
-    @NotNull
     private LocalDate targetDate;
 
-    @NotNull
-    private List<String> tripMemberList;
+    private List<String> tripMembersList;
 }

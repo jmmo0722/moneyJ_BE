@@ -19,7 +19,7 @@ public interface TripPlanRepository extends JpaRepository<TripPlan, Long> {
            join fetch tp.tripMemberList tm 
            where tm.user.user_id = :userId
            """)
-    List<TripPlan> findAllByUserId(@Param("userId") Long userId);
+    Optional<List<TripPlan>> findAllByUserId(@Param("userId") Long userId);
 
     // 여행 플랜 상세 조회
     @Query("""
