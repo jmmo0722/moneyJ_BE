@@ -56,7 +56,7 @@ public class TripController {
      */
     // TODO 후에 로그인 로직 추가시 userId 파라미터 변경
     // TODO 아무도 없는 유령 플랜 삭제 로직 추가
-    @DeleteMapping("{/planId}/{userId}")
+    @DeleteMapping("/{planId}/{userId}")
     public ResponseEntity<TripPlanResponseDTO> leavePlan(@PathVariable Long planId, @PathVariable Long userId){
 
         TripPlanResponseDTO response = tripPlanService.leavePlan(planId, userId);
