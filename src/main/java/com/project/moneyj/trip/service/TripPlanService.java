@@ -11,12 +11,14 @@ import com.project.moneyj.trip.repository.TripTipRepository;
 import com.project.moneyj.user.domain.User;
 import com.project.moneyj.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class TripPlanService {
 
@@ -34,7 +36,9 @@ public class TripPlanService {
 
         // 멤버들 id 조회
         List<User> members = userRepository.findAllByEmailIn(requestDTO.getTripMemberList());
-        List<TripMember> tripMemberList;
+        for (User member : members) {
+            log.info("------------------------member: {}", member);
+        }
 
         TripPlan tripPlan = TripPlan.builder()
                 .country(requestDTO.getCountry())

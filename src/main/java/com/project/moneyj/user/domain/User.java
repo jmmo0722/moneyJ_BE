@@ -20,13 +20,13 @@ import java.util.List;
 public class User {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long user_id;
+    private Long userId;
 
     private String nickname;
 
     private String email;
 
-    private String image_url;
+    private String imageUrl;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transaction> transactionList = new ArrayList<>();
