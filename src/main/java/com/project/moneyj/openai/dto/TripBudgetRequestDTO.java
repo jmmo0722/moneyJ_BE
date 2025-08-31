@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
-public class TravelRequestDTO {
+public class TripBudgetRequestDTO {
     private String destination;
     private int days;
     private LocalDate startDate;

@@ -1,7 +1,7 @@
 package com.project.moneyj.openai.service;
 
-import com.project.moneyj.openai.dto.TravelRequestDTO;
-import com.project.moneyj.openai.dto.TravelResponseDTO;
+import com.project.moneyj.openai.dto.TripBudgetResponseDTO;
+import com.project.moneyj.openai.dto.TripBudgetRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
@@ -9,14 +9,14 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class TravelService {
+public class TripBudgetService {
 
     private final ChatClient chatClient;
 
     /**
      * 여행 경비 계산 관련 Prompt
      */
-    public TravelResponseDTO getTravelBudget(TravelRequestDTO request) {
+    public TripBudgetResponseDTO getTripBudget(TripBudgetRequestDTO request) {
 
         String promptText = String.format(
                 "여행지: %s, 기간: %d일, 출발일: %s, 도착일: %s "
@@ -41,6 +41,6 @@ public class TravelService {
                 .system("너는 여행 경비 분석가야. 반드시 JSON으로만 답변해야 한다.")
                 .user(promptText)
                 .call()
-                .entity(TravelResponseDTO.class);
+                .entity(TripBudgetResponseDTO.class);
     }
 }

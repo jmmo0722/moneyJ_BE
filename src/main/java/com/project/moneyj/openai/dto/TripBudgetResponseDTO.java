@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class TravelResponseDTO {
+public class TripBudgetResponseDTO {
     private int flightCost;
     private int accommodationCost;
     private int foodCost;
