@@ -2,11 +2,11 @@ package com.project.moneyj.trip.service;
 
 import com.project.moneyj.trip.domain.TripMember;
 import com.project.moneyj.trip.domain.TripPlan;
-import com.project.moneyj.trip.dto.TripPlanListResponseDTO;
-import com.project.moneyj.trip.dto.TripPlanRequestDTO;
-import com.project.moneyj.trip.dto.TripPlanResponseDTO;
+import com.project.moneyj.trip.dto.*;
 import com.project.moneyj.trip.repository.TripMemberRepository;
 import com.project.moneyj.trip.repository.TripPlanRepository;
+import com.project.moneyj.trip.repository.TripSavingPhraseRepository;
+import com.project.moneyj.trip.repository.TripTipRepository;
 import com.project.moneyj.user.domain.User;
 import com.project.moneyj.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +22,8 @@ public class TripPlanService {
     private final UserRepository userRepository;
     private final TripPlanRepository tripPlanRepository;
     private final TripMemberRepository tripMemberRepository;
+    private final TripTipRepository tripTipRepository;
+    private final TripSavingPhraseRepository tripSavingPhraseRepository;
 
     /**
      * 여행 플랜 생성
@@ -36,7 +38,6 @@ public class TripPlanService {
                 .currentSavings(0)
                 .duration(requestDTO.getDuration())
                 .membersCount(members.size())
-                .destination(requestDTO.getDestination())
                 .tripStartDate(requestDTO.getTripStartDate())
                 .tripEndDate(requestDTO.getTripEndDate())
                 .totalBudget(requestDTO.getTotalBudget())
@@ -70,38 +71,19 @@ public class TripPlanService {
     /**
      * 여행 플랜 상세 조회
      */
-//    @Transactional(readOnly = true)
-//    public TripPlanDetailResponse getTripPlanDetail(Long planId) {
-//        TripPlan plan = tripPlanRepository.findDetailById(planId)
-//                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 플랜"));
-//
-//        // 문구 조회
-//        //List<String> savings = tripMemberRepository.findContentsByPlanIdAndType(planId, ContentType.SAVINGS);
-//        //List<String> tips = tripMemberRepository.findContentsByPlanIdAndType(planId, ContentType.TIP);
-//
-//        // 멤버 DTO 변환
-//        List<TripPlanDetailResponse.MemberDto> members = plan.getTripMemberList().stream()
-//                .map(tm -> new TripPlanDetailResponse.MemberDto(
-//                        tm.getUser().getUser_id(),
-//                        tm.getUser().getEmail(),
-//                        tm.getUser().getNickname(),
-//                        tm.getUser().getImage_url()
-//                ))
-//                .toList();
-//
-//        return new TripPlanDetailResponse(
-//                plan.getTrip_plan_id(),
-//                plan.getDestination(),
-//                plan.getDuration(),
-//                plan.getTripStartDate(),
-//                plan.getTripEndDate(),
-//                plan.getTotalBudget(),
-//                plan.getCurrentSavings(),
-//                plan.getStartDate(),
-//                plan.getTargetDate(),
-//                savings,
-//                tips,
-//                members
-//        );
-//    }
+    @Transactional(readOnly = true)
+    public TripPlanDetailResponseDTO getTripPlanDetail(Long planId, Long userId) {
+        TripPlan plan = tripPlanRepository.findDetailById(planId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 플랜"));
+
+        // 문구 조회
+        List<String> savings = tripSavingPhraseRepository.findAllContentByMemberId(userId);
+        List<String> tips = tripTipRepository.findAllByCountry(plan.getCountry());
+
+        // 멤버 DTO 변환
+        List<TripMemberDTO> tripMemberDTOList = tripMemberRepository.findTripMemberByTripPlanId(planId).stream()
+                .map(TripMemberDTO::fromEntity).toList();
+
+        return TripPlanDetailResponseDTO.fromEntity(plan, savings, tips, tripMemberDTOList);
+    }
 }

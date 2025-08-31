@@ -4,17 +4,30 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Data
+@Builder
 @AllArgsConstructor
 public class TripPlanRequestDTO {
 
     @NotNull
-    private String destination;
+    private String country;
+    @NotNull
+    private String city;
+
+    @NotNull
+    private Integer flight_cost;
+    @NotNull
+    private Integer accommodation_cost;
+    @NotNull
+    private Integer food_cost;
+    @NotNull
+    private Integer other_cost;
 
     @Min(1)
     private Integer duration;

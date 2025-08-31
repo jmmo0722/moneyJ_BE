@@ -22,7 +22,13 @@ public class TripPlan {
     private Long trip_plan_id;
 
     private Integer membersCount;
-    private String destination;
+    private String country;
+    private String city;
+
+    private Integer flight_cost;
+    private Integer accommodation_cost;
+    private Integer food_cost;
+    private Integer other_cost;
 
     private Integer duration;
     private LocalDate tripStartDate;
@@ -33,9 +39,6 @@ public class TripPlan {
 
     private LocalDate startDate;
     private LocalDate targetDate;
-
-    private String savingsPhrase;
-    private String tripTip;
 
     @OneToMany(mappedBy = "tripPlan", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TripMember> tripMemberList = new ArrayList<>();

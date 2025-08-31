@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -28,6 +30,9 @@ public class TripMember {
 
     @Enumerated(EnumType.STRING) @Column(nullable = false, length = 20)
     private MemberRole memberRole;
+
+    @OneToMany(mappedBy = "tripMember", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TripSavingPhrase> tripSavingPhrase;
 
     public void enrollTripMember(User user, TripPlan tripPlan){
         this.user = user;

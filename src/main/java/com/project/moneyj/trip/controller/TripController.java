@@ -1,5 +1,6 @@
 package com.project.moneyj.trip.controller;
 
+import com.project.moneyj.trip.dto.TripPlanDetailResponseDTO;
 import com.project.moneyj.trip.dto.TripPlanListResponseDTO;
 import com.project.moneyj.trip.dto.TripPlanRequestDTO;
 import com.project.moneyj.trip.dto.TripPlanResponseDTO;
@@ -37,8 +38,8 @@ public class TripController {
     /**
      * 여행 플랜 상세 조회
      */
-//    @GetMapping("/{planId}")
-//    public ResponseEntity<TripPlanDetailResponse> getPlanDetail(@PathVariable Long planId) {
-//        return ResponseEntity.ok(tripPlanService.getTripPlanDetail(planId));
-//    }
+    @GetMapping("/{planId}/{userId}")
+    public ResponseEntity<TripPlanDetailResponseDTO> getPlanDetail(@PathVariable Long planId, @PathVariable Long userId) {
+        return ResponseEntity.ok(tripPlanService.getTripPlanDetail(planId, userId));
+    }
 }

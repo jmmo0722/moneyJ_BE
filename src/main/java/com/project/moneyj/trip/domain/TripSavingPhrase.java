@@ -11,22 +11,15 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "trip_member_tip")
-public class TripMemberTip {
+@Table(name = "trip_saving_phrase")
+public class TripSavingPhrase {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long tripMemberTipId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "trip_plan_id")
-    private TripPlan tripPlan;
+    private Long tripSavingPhraseId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trip_member_id")
     private TripMember tripMember;
-
-    @Enumerated(EnumType.STRING) @Column(nullable = false, length = 20)
-    private ContentType contentType;
 
     private String content;
 
