@@ -14,12 +14,8 @@ import java.util.Optional;
 @Repository
 public interface TripMemberRepository extends JpaRepository<TripMember, Long> {
 
-    @Query("""
-        select TripMember
-        from TripMember tm
-        where tm.tripPlan.tripPlanId = :planId
-        """)
-    Optional<List<TripMember>> findTripMemberByTripPlanId(@Param("planId") Long planId);
+    @Query("SELECT tm FROM TripMember tm WHERE tm.tripPlan.tripPlanId = :planId")
+    List<TripMember> findTripMemberByTripPlanId(@Param("planId") Long planId);
 
     // 여행 플랜 삭제
     Optional<TripMember> findByTripPlanAndUser(TripPlan tripPlan, User user);

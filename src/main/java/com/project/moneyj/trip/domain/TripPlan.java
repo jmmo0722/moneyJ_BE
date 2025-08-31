@@ -2,10 +2,7 @@ package com.project.moneyj.trip.domain;
 
 import com.project.moneyj.trip.dto.TripPlanPatchRequestDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

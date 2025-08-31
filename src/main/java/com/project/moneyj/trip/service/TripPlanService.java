@@ -95,8 +95,11 @@ public class TripPlanService {
         List<String> tips = tripTipRepository.findAllByCountry(plan.getCountry()).orElseThrow(() -> new IllegalArgumentException("여행 팁이 존재하지 않습니다!"));
 
         // 멤버 DTO 변환
-        List<TripMember> tripMemberList = tripMemberRepository.findTripMemberByTripPlanId(planId)
-                .orElseThrow(() -> new IllegalArgumentException("멤버가 존재하지 않습니다!"));
+        List<TripMember> tripMemberList = tripMemberRepository.findTripMemberByTripPlanId(planId);
+        if (tripMemberList.isEmpty()) {
+            throw new IllegalArgumentException("해당 플랜에 멤버가 존재하지 않습니다!");
+        }
+
         List<TripMemberDTO> tripMemberDTOList = tripMemberList.stream()
                 .map(TripMemberDTO::fromEntity).toList();
 

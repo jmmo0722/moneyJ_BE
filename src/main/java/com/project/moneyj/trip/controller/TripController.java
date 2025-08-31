@@ -42,6 +42,9 @@ public class TripController {
         return ResponseEntity.ok(tripPlanService.getTripPlanDetail(planId, userId));
     }
 
+    /**
+     * 여행 플랜 수정
+     */
     @PatchMapping("/{planId}")
     public ResponseEntity<TripPlanResponseDTO> putPlan(
             @PathVariable Long planId,
