@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TripSavingPhraseRepository extends JpaRepository<TripSavingPhrase, Long> {
@@ -16,5 +17,5 @@ public interface TripSavingPhraseRepository extends JpaRepository<TripSavingPhra
             from TripSavingPhrase tsp
             where tsp.tripMember.user.user_id = :userId
             """)
-    List<String> findAllContentByMemberId(@Param("userId") Long userId);
+    Optional<List<String>> findAllContentByMemberId(@Param("userId") Long userId);
 }

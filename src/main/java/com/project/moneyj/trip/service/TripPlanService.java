@@ -86,8 +86,8 @@ public class TripPlanService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 플랜"));
 
         // 문구 조회
-        List<String> savings = tripSavingPhraseRepository.findAllContentByMemberId(userId);
-        List<String> tips = tripTipRepository.findAllByCountry(plan.getCountry());
+        List<String> savings = tripSavingPhraseRepository.findAllContentByMemberId(userId).orElseThrow(() -> new IllegalArgumentException("저축 플랜이 존재하지 않습니다!"));
+        List<String> tips = tripTipRepository.findAllByCountry(plan.getCountry()).orElseThrow(() -> new IllegalArgumentException("여행 팁이 존재하지 않습니다!"));
 
         // 멤버 DTO 변환
         List<TripMember> tripMemberList = tripMemberRepository.findTripMemberByTripPlanId(planId)

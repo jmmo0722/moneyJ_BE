@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TripTipRepository extends JpaRepository<TripTip, Long> {
@@ -18,6 +19,6 @@ public interface TripTipRepository extends JpaRepository<TripTip, Long> {
         from TripTip tt
         where tt.country = :country
         """)
-    List<String> findAllByCountry(@Param("country") String country);
+    Optional<List<String>> findAllByCountry(@Param("country") String country);
 
 }
