@@ -22,9 +22,9 @@ public class TripMemberDTO {
 
     public static TripMemberDTO fromEntity(TripMember tripMember){
         return TripMemberDTO.builder()
-                .userId(tripMember.getUser().getUser_id())
+                .userId(tripMember.getUser().getUserId())
                 .nickname(tripMember.getUser().getNickname())
                 .email(tripMember.getUser().getEmail())
-                .image_url(tripMember.getUser().getImage_url()).build();
+                .image_url(tripMember.getUser().getImageUrl()).build();
     }
 }
