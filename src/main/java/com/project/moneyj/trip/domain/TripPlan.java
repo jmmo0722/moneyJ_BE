@@ -42,6 +42,7 @@ public class TripPlan {
     private LocalDate targetDate;
 
     @OneToMany(mappedBy = "tripPlan", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<TripMember> tripMemberList = new ArrayList<>();
 
     // Patch 비즈니스 메소드
