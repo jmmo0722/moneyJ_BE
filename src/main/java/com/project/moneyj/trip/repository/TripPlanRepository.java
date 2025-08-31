@@ -17,7 +17,7 @@ public interface TripPlanRepository extends JpaRepository<TripPlan, Long> {
            select tp 
            from TripPlan tp 
            join fetch tp.tripMemberList tm 
-           where tm.user.user_id = :userId
+           where tm.user.userId = :userId
            """)
     Optional<List<TripPlan>> findAllByUserId(@Param("userId") Long userId);
 
