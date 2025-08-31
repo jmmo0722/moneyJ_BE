@@ -41,5 +41,8 @@ public class TripMember {
 
         this.tripPlan = tripPlan;
         tripPlan.getTripMemberList().add(this);
+
+        // TODO 후에 방장과 멤버 역할 구분 로직 작성
+        this.memberRole = MemberRole.MEMBER;
     }
 }

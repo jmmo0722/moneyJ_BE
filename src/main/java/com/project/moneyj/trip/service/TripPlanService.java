@@ -1,5 +1,6 @@
 package com.project.moneyj.trip.service;
 
+import com.project.moneyj.trip.domain.MemberRole;
 import com.project.moneyj.trip.domain.TripMember;
 import com.project.moneyj.trip.domain.TripPlan;
 import com.project.moneyj.trip.dto.*;
