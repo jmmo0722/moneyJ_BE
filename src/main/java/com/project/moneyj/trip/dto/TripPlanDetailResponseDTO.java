@@ -46,7 +46,7 @@ public class TripPlanDetailResponseDTO {
 
     public static TripPlanDetailResponseDTO fromEntity(TripPlan tripPlan, List<String> savingsPhrase, List<String> tripTip, List<TripMemberDTO> tripMemberDTOList){
         return TripPlanDetailResponseDTO.builder()
-                .planId(tripPlan.getTrip_plan_id())
+                .planId(tripPlan.getTripPlanId())
                 .country(tripPlan.getCountry())
                 .city(tripPlan.getCity())
                 .flight_cost(tripPlan.getFlightCost())

@@ -25,7 +25,7 @@ public interface TripPlanRepository extends JpaRepository<TripPlan, Long> {
     @Query("""
         select tp from TripPlan tp
         left join fetch tp.tripMemberList tm
-        where tp.trip_plan_id = :planId
+        where tp.tripPlanId = :planId
     """)
     Optional<TripPlan> findDetailById(@Param("planId") Long planId);
 }

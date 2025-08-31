@@ -26,7 +26,7 @@ public class TripPlanListResponseDTO {
 
     public static TripPlanListResponseDTO fromEntity(TripPlan entity){
         return new TripPlanListResponseDTO(
-                entity.getTrip_plan_id(),
+                entity.getTripPlanId(),
                 entity.getCountry(),
                 entity.getCity(),
                 entity.getTripStartDate(),
