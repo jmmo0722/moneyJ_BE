@@ -19,7 +19,7 @@ import java.util.List;
 public class TripMember {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long trip_member_id;
+    private Long tripMemberId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

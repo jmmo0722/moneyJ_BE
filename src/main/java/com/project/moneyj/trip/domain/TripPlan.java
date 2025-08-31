@@ -20,7 +20,7 @@ import java.util.List;
 public class TripPlan {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long trip_plan_id;
+    private Long tripPlanId;
 
     private Integer membersCount;
     private String country;
