@@ -46,7 +46,7 @@ public class TripPlan {
 
     // Patch 비즈니스 메소드
     public void update(TripPlanPatchRequestDTO patchRequestDTO){
-        // DTO의 각 필드가 null이 아닌지 확인하고, 엔티티의 상태를 직접 변경합니다.
+
         if (patchRequestDTO.getCountry() != null) {
             this.country = patchRequestDTO.getCountry();
         }
@@ -56,15 +56,38 @@ public class TripPlan {
         if (patchRequestDTO.getFlight_cost() != null) {
             this.flight_cost = patchRequestDTO.getFlight_cost();
         }
+        if (patchRequestDTO.getAccommodation_cost() != null) {
+            this.accommodation_cost = patchRequestDTO.getAccommodation_cost();
+        }
+        if (patchRequestDTO.getFood_cost() != null) {
+            this.food_cost = patchRequestDTO.getFood_cost();
+        }
+        if (patchRequestDTO.getOther_cost() != null) {
+            this.other_cost = patchRequestDTO.getOther_cost();
+        }
+        if (patchRequestDTO.getOther_cost() != null) {
+            this.duration = patchRequestDTO.getDuration();
+        }
         if (patchRequestDTO.getTripStartDate() != null) {
             this.tripStartDate = patchRequestDTO.getTripStartDate();
         }
         if (patchRequestDTO.getTripEndDate() != null) {
             this.tripEndDate = patchRequestDTO.getTripEndDate();
         }
-        // ... (나머지 필드에 대해 동일한 패턴으로 반복) ...
+        if (patchRequestDTO.getTotalBudget() != null) {
+            this.totalBudget = patchRequestDTO.getTotalBudget();
+        }
+        if (patchRequestDTO.getCurrentSavings() != null) {
+            this.currentSavings = patchRequestDTO.getCurrentSavings();
+        }
+        if (patchRequestDTO.getStartDate() != null) {
+            this.startDate = patchRequestDTO.getStartDate();
+        }
+        if (patchRequestDTO.getTargetDate() != null) {
+            this.targetDate = patchRequestDTO.getTargetDate();
+        }
 
-        // 이 메소드 내에서 데이터의 일관성을 검증할 수 있습니다.
+        // 검증
         validateDates();
     }
 

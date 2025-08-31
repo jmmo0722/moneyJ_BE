@@ -27,11 +27,13 @@ public class TripPlanPatchRequestDTO {
     private Integer food_cost;
     private Integer other_cost;
 
+    private Integer duration;
     private LocalDate tripStartDate;
     private LocalDate tripEndDate;
 
     private Integer totalBudget;
-    private LocalDate targetDate;
+    private Integer currentSavings;
 
-    private List<String> tripMembersList;
+    private LocalDate startDate;
+    private LocalDate targetDate;
 }

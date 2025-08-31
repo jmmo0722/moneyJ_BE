@@ -28,8 +28,8 @@ public class TripController {
      * 여행 플랜 조회
      */
     // TODO 후에 로그인 로직 추가시 userId 파라미터 변경
-    @GetMapping
-    public ResponseEntity<List<TripPlanListResponseDTO>> getUserTripPlans(Long userId){
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<TripPlanListResponseDTO>> getUserTripPlans(@PathVariable Long userId){
         return ResponseEntity.ok(tripPlanService.getUserTripPlans(userId));
     }
 

@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -32,7 +33,7 @@ public class TripMember {
     private MemberRole memberRole;
 
     @OneToMany(mappedBy = "tripMember", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TripSavingPhrase> tripSavingPhrase;
+    private List<TripSavingPhrase> tripSavingPhrase = new ArrayList<>();
 
     public void enrollTripMember(User user, TripPlan tripPlan){
         this.user = user;
