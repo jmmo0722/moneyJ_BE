@@ -25,13 +25,13 @@ public class TripPlanRequestDTO {
     private String city;
 
     @NotNull
-    private Integer flight_cost;
+    private Integer flightCost;
     @NotNull
-    private Integer accommodation_cost;
+    private Integer accommodationCost;
     @NotNull
-    private Integer food_cost;
+    private Integer foodCost;
     @NotNull
-    private Integer other_cost;
+    private Integer otherCost;
 
     @Min(1)
     private Integer duration;

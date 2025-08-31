@@ -26,10 +26,10 @@ public class TripPlan {
     private String country;
     private String city;
 
-    private Integer flight_cost;
-    private Integer accommodation_cost;
-    private Integer food_cost;
-    private Integer other_cost;
+    private Integer flightCost;
+    private Integer accommodationCost;
+    private Integer foodCost;
+    private Integer otherCost;
 
     private Integer duration;
     private LocalDate tripStartDate;
@@ -55,16 +55,16 @@ public class TripPlan {
             this.city = patchRequestDTO.getCity();
         }
         if (patchRequestDTO.getFlight_cost() != null) {
-            this.flight_cost = patchRequestDTO.getFlight_cost();
+            this.flightCost = patchRequestDTO.getFlight_cost();
         }
         if (patchRequestDTO.getAccommodation_cost() != null) {
-            this.accommodation_cost = patchRequestDTO.getAccommodation_cost();
+            this.accommodationCost = patchRequestDTO.getAccommodation_cost();
         }
         if (patchRequestDTO.getFood_cost() != null) {
-            this.food_cost = patchRequestDTO.getFood_cost();
+            this.foodCost = patchRequestDTO.getFood_cost();
         }
         if (patchRequestDTO.getOther_cost() != null) {
-            this.other_cost = patchRequestDTO.getOther_cost();
+            this.otherCost = patchRequestDTO.getOther_cost();
         }
         if (patchRequestDTO.getOther_cost() != null) {
             this.duration = patchRequestDTO.getDuration();
