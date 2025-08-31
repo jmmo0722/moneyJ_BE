@@ -1,6 +1,6 @@
 package com.project.moneyj.user.controller;
 
-import com.project.moneyj.user.dto.UserResponse;
+import com.project.moneyj.user.dto.UserResponseDTO;
 import com.project.moneyj.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +17,9 @@ public class UserController {
 
 //    @PreAuthorize("hasRole('USER')")
     @GetMapping()
-    public ResponseEntity<UserResponse> getUser() {
-        UserResponse userResponse = userService.getUser();
+    public ResponseEntity<UserResponseDTO> getUser() {
+        UserResponseDTO userResponseDTO = userService.getUser();
 
-        return ResponseEntity.ok(userResponse);
+        return ResponseEntity.ok(userResponseDTO);
     }
 }
