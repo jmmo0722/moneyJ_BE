@@ -66,7 +66,7 @@ public class TripPlanService {
             tripMemberRepository.save(tripMember);
         }
 
-        return new TripPlanResponseDTO(saved.getTrip_plan_id(), "여행 플랜 생성 완료");
+        return new TripPlanResponseDTO(saved.getTripPlanId(), "여행 플랜 생성 완료");
     }
 
     /**
