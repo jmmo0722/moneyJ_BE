@@ -24,10 +24,10 @@ public class TripPlanDetailResponseDTO {
     private String country;
     private String city;
 
-    private Integer flight_cost;
-    private Integer accommodation_cost;
-    private Integer food_cost;
-    private Integer other_cost;
+    private Integer flightCost;
+    private Integer accommodationCost;
+    private Integer foodCost;
+    private Integer otherCost;
 
     private Integer duration;
     private LocalDate tripStartDate;
@@ -49,10 +49,10 @@ public class TripPlanDetailResponseDTO {
                 .planId(tripPlan.getTripPlanId())
                 .country(tripPlan.getCountry())
                 .city(tripPlan.getCity())
-                .flight_cost(tripPlan.getFlightCost())
-                .accommodation_cost(tripPlan.getAccommodationCost())
-                .food_cost(tripPlan.getFoodCost())
-                .other_cost(tripPlan.getOtherCost())
+                .flightCost(tripPlan.getFlightCost())
+                .accommodationCost(tripPlan.getAccommodationCost())
+                .flightCost(tripPlan.getFoodCost())
+                .otherCost(tripPlan.getOtherCost())
                 .duration(tripPlan.getDuration())
                 .tripStartDate(tripPlan.getTripStartDate())
                 .tripEndDate(tripPlan.getTripEndDate())

@@ -45,45 +45,19 @@ public class TripPlan {
     // Patch 비즈니스 메소드
     public void update(TripPlanPatchRequestDTO patchRequestDTO){
 
-        if (patchRequestDTO.getCountry() != null) {
-            this.country = patchRequestDTO.getCountry();
-        }
-        if (patchRequestDTO.getCity() != null) {
-            this.city = patchRequestDTO.getCity();
-        }
-        if (patchRequestDTO.getFlight_cost() != null) {
-            this.flightCost = patchRequestDTO.getFlight_cost();
-        }
-        if (patchRequestDTO.getAccommodation_cost() != null) {
-            this.accommodationCost = patchRequestDTO.getAccommodation_cost();
-        }
-        if (patchRequestDTO.getFood_cost() != null) {
-            this.foodCost = patchRequestDTO.getFood_cost();
-        }
-        if (patchRequestDTO.getOther_cost() != null) {
-            this.otherCost = patchRequestDTO.getOther_cost();
-        }
-        if (patchRequestDTO.getOther_cost() != null) {
-            this.duration = patchRequestDTO.getDuration();
-        }
-        if (patchRequestDTO.getTripStartDate() != null) {
-            this.tripStartDate = patchRequestDTO.getTripStartDate();
-        }
-        if (patchRequestDTO.getTripEndDate() != null) {
-            this.tripEndDate = patchRequestDTO.getTripEndDate();
-        }
-        if (patchRequestDTO.getTotalBudget() != null) {
-            this.totalBudget = patchRequestDTO.getTotalBudget();
-        }
-        if (patchRequestDTO.getCurrentSavings() != null) {
-            this.currentSavings = patchRequestDTO.getCurrentSavings();
-        }
-        if (patchRequestDTO.getStartDate() != null) {
-            this.startDate = patchRequestDTO.getStartDate();
-        }
-        if (patchRequestDTO.getTargetDate() != null) {
-            this.targetDate = patchRequestDTO.getTargetDate();
-        }
+        if (patchRequestDTO.getCountry() != null) this.country = patchRequestDTO.getCountry();
+        if (patchRequestDTO.getCity() != null) this.city = patchRequestDTO.getCity();
+        if (patchRequestDTO.getFlightCost() != null) this.flightCost = patchRequestDTO.getFlightCost();
+        if (patchRequestDTO.getAccommodationCost() != null) this.accommodationCost = patchRequestDTO.getAccommodationCost();
+        if (patchRequestDTO.getFoodCost() != null) this.foodCost = patchRequestDTO.getFoodCost();
+        if (patchRequestDTO.getOtherCost() != null) this.otherCost = patchRequestDTO.getOtherCost();
+        if (patchRequestDTO.getDuration() != null) this.duration = patchRequestDTO.getDuration();
+        if (patchRequestDTO.getTripStartDate() != null) this.tripStartDate = patchRequestDTO.getTripStartDate();
+        if (patchRequestDTO.getTripEndDate() != null) this.tripEndDate = patchRequestDTO.getTripEndDate();
+        if (patchRequestDTO.getTotalBudget() != null) this.totalBudget = patchRequestDTO.getTotalBudget();
+        if (patchRequestDTO.getCurrentSavings() != null) this.currentSavings = patchRequestDTO.getCurrentSavings();
+        if (patchRequestDTO.getStartDate() != null) this.startDate = patchRequestDTO.getStartDate();
+        if (patchRequestDTO.getTargetDate() != null) this.targetDate = patchRequestDTO.getTargetDate();
 
         // 검증
         validateDates();

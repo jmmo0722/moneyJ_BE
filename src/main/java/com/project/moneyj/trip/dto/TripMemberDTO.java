@@ -25,6 +25,6 @@ public class TripMemberDTO {
                 .userId(tripMember.getUser().getUserId())
                 .nickname(tripMember.getUser().getNickname())
                 .email(tripMember.getUser().getEmail())
-                .image_url(tripMember.getUser().getImageUrl()).build();
+                .image_url(tripMember.getUser().getProfileImage()).build();
     }
 }

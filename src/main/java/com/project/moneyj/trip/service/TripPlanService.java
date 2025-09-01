@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -75,8 +76,7 @@ public class TripPlanService {
     @Transactional(readOnly = true)
     public List<TripPlanListResponseDTO> getUserTripPlans(Long userId) {
 
-        List<TripPlan> tripPlan = tripPlanRepository.findAllByUserId(userId)
-                .orElseThrow(() -> new IllegalArgumentException("여행 플랜이 존재하지 않습니다!"));
+        List<TripPlan> tripPlan = tripPlanRepository.findAllByUserId(userId);
         return tripPlan.stream()
                 .map(TripPlanListResponseDTO::fromEntity)
                 .toList();
@@ -91,8 +91,11 @@ public class TripPlanService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 플랜"));
 
         // 문구 조회
-        List<String> savings = tripSavingPhraseRepository.findAllContentByMemberId(userId).orElseThrow(() -> new IllegalArgumentException("저축 플랜이 존재하지 않습니다!"));
-        List<String> tips = tripTipRepository.findAllByCountry(plan.getCountry()).orElseThrow(() -> new IllegalArgumentException("여행 팁이 존재하지 않습니다!"));
+        List<String> savings = tripSavingPhraseRepository.findAllContentByMemberId(userId);
+        if(savings.isEmpty()) throw new IllegalArgumentException("저축 플랜이 존재하지 않습니다!");
+
+        List<String> tips = tripTipRepository.findAllByCountry(plan.getCountry());
+        if(tips.isEmpty()) throw new IllegalArgumentException("여행 팁이 존재하지 않습니다!");
 
         // 멤버 DTO 변환
         List<TripMember> tripMemberList = tripMemberRepository.findTripMemberByTripPlanId(planId);

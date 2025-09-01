@@ -26,7 +26,7 @@ public class User {
 
     private String email;
 
-    private String imageUrl;
+    private String profileImage;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transaction> transactionList = new ArrayList<>();

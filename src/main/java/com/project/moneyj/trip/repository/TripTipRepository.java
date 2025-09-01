@@ -19,6 +19,6 @@ public interface TripTipRepository extends JpaRepository<TripTip, Long> {
         from TripTip tt
         where tt.country = :country
         """)
-    Optional<List<String>> findAllByCountry(@Param("country") String country);
+    List<String> findAllByCountry(@Param("country") String country);
 
 }
