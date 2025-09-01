@@ -1,13 +1,12 @@
 package com.project.moneyj.trip.repository;
 
 import com.project.moneyj.trip.domain.TripPlan;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface TripPlanRepository extends JpaRepository<TripPlan, Long> {
@@ -16,7 +15,7 @@ public interface TripPlanRepository extends JpaRepository<TripPlan, Long> {
            select tp 
            from TripPlan tp 
            join fetch tp.tripMemberList tm 
-           where tm.user.user_id = :userId
+           where tm.user.userId = :userId
            """)
     List<TripPlan> findAllByUserId(@Param("userId") Long userId);
 
