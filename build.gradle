@@ -46,6 +46,17 @@ dependencies {
 	// test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	runtimeOnly 'com.mysql:mysql-connector-j'
+  
+	implementation 'org.springframework.ai:spring-ai-starter-model-openai'
+	implementation "me.paulschwarz:spring-dotenv:4.0.0"
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.ai:spring-ai-bom:1.0.0"
+	}
 }
 
 tasks.named('test') {
