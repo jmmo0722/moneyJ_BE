@@ -43,6 +43,7 @@ public class TripPlanService {
 
         TripPlan tripPlan = TripPlan.builder()
                 .country(requestDTO.getCountry())
+                .countryCode(requestDTO.getCountryCode())
                 .city(requestDTO.getCity())
                 .flightCost((requestDTO.getFlightCost()))
                 .accommodationCost((requestDTO.getAccommodationCost()))

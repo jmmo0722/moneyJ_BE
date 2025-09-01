@@ -1,5 +1,6 @@
 package com.project.moneyj.trip.dto;
 
+import com.project.moneyj.trip.domain.TripPlan;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -21,6 +22,8 @@ public class TripPlanRequestDTO {
 
     @NotNull
     private String country;
+    @NotNull
+    private String countryCode;
     @NotNull
     private String city;
 

@@ -18,6 +18,7 @@ public class TripPlanListResponseDTO {
 
     private Long planId;
     private String country;
+    private String countryCode;
     private String city;
     private LocalDate tripStartDate;
     private LocalDate tripEndDate;
@@ -28,6 +29,7 @@ public class TripPlanListResponseDTO {
         return new TripPlanListResponseDTO(
                 entity.getTripPlanId(),
                 entity.getCountry(),
+                entity.getCountryCode(),
                 entity.getCity(),
                 entity.getTripStartDate(),
                 entity.getTripEndDate(),

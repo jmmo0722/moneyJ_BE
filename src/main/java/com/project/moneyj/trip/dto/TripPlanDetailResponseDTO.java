@@ -22,6 +22,7 @@ public class TripPlanDetailResponseDTO {
 
     private Long planId;
     private String country;
+    private String countryCode;
     private String city;
 
     private Integer flightCost;
@@ -48,6 +49,7 @@ public class TripPlanDetailResponseDTO {
         return TripPlanDetailResponseDTO.builder()
                 .planId(tripPlan.getTripPlanId())
                 .country(tripPlan.getCountry())
+                .countryCode(tripPlan.getCountryCode())
                 .city(tripPlan.getCity())
                 .flightCost(tripPlan.getFlightCost())
                 .accommodationCost(tripPlan.getAccommodationCost())

@@ -21,6 +21,7 @@ public class TripPlan {
 
     private Integer membersCount;
     private String country;
+    private String countryCode;
     private String city;
 
     private Integer flightCost;
@@ -46,6 +47,7 @@ public class TripPlan {
     public void update(TripPlanPatchRequestDTO patchRequestDTO){
 
         if (patchRequestDTO.getCountry() != null) this.country = patchRequestDTO.getCountry();
+        if (patchRequestDTO.getCountryCode() != null) this.countryCode = patchRequestDTO.getCountryCode();
         if (patchRequestDTO.getCity() != null) this.city = patchRequestDTO.getCity();
         if (patchRequestDTO.getFlightCost() != null) this.flightCost = patchRequestDTO.getFlightCost();
         if (patchRequestDTO.getAccommodationCost() != null) this.accommodationCost = patchRequestDTO.getAccommodationCost();

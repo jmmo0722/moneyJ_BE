@@ -20,6 +20,7 @@ public class TripPlanPatchRequestDTO {
      */
 
     private String country;
+    private String countryCode;
     private String city;
 
     private Integer flightCost;
