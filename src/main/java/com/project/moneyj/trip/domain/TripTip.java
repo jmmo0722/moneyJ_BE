@@ -12,7 +12,7 @@ import lombok.*;
 public class TripTip {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long tripId;
+    private Long tripTipId;
 
     private String country;
 
