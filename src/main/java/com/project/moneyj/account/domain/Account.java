@@ -21,6 +21,8 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long accountId;
 
+    private String accountNumber;
+
     private Long balance;
 
     @ManyToOne(fetch = FetchType.LAZY)
