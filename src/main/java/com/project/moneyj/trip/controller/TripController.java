@@ -1,9 +1,11 @@
 package com.project.moneyj.trip.controller;
 
+import com.project.moneyj.auth.dto.CustomOAuth2User;
 import com.project.moneyj.trip.dto.*;
 import com.project.moneyj.trip.service.TripPlanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,18 +29,20 @@ public class TripController {
     /**
      * 여행 플랜 조회
      */
-    // TODO 후에 로그인 로직 추가시 userId 파라미터 변경
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<TripPlanListResponseDTO>> getUserTripPlans(@PathVariable Long userId){
+    @GetMapping
+    public ResponseEntity<List<TripPlanListResponseDTO>> getUserTripPlans(@AuthenticationPrincipal CustomOAuth2User customUser){
+        Long userId = customUser.getUserId();
         return ResponseEntity.ok(tripPlanService.getUserTripPlans(userId));
     }
 
     /**
      * 여행 플랜 상세 조회
      */
-    // TODO 후에 로그인 로직 추가시 userId 파라미터 변경
-    @GetMapping("/{planId}/{userId}")
-    public ResponseEntity<TripPlanDetailResponseDTO> getPlanDetail(@PathVariable Long planId, @PathVariable Long userId) {
+    @GetMapping("/{planId}")
+    public ResponseEntity<TripPlanDetailResponseDTO> getPlanDetail(
+            @PathVariable Long planId,
+            @AuthenticationPrincipal CustomOAuth2User customUser) {
+        Long userId = customUser.getUserId();
         return ResponseEntity.ok(tripPlanService.getTripPlanDetail(planId, userId));
     }
 
@@ -55,13 +59,15 @@ public class TripController {
     }
 
     /**
-     * 여행 플랜 삭제
+     * 여행 플랜 탈퇴
      */
-    // TODO 후에 로그인 로직 추가시 userId 파라미터 변경
     // TODO 아무도 없는 유령 플랜 삭제 로직 추가
-    @DeleteMapping("/{planId}/{userId}")
-    public ResponseEntity<TripPlanResponseDTO> leavePlan(@PathVariable Long planId, @PathVariable Long userId){
+    @DeleteMapping("/{planId}")
+    public ResponseEntity<TripPlanResponseDTO> leavePlan(
+            @PathVariable Long planId,
+            @AuthenticationPrincipal CustomOAuth2User customUser){
 
+        Long userId = customUser.getUserId();
         TripPlanResponseDTO response = tripPlanService.leavePlan(planId, userId);
 
         return ResponseEntity.ok(response);
