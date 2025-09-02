@@ -37,9 +37,6 @@ public class TripPlanService {
 
         // 멤버들 id 조회
         List<User> members = userRepository.findAllByEmailIn(requestDTO.getTripMemberList());
-        for (User member : members) {
-            log.info("------------------------member: {}", member);
-        }
 
         TripPlan tripPlan = TripPlan.builder()
                 .country(requestDTO.getCountry())
@@ -117,11 +114,38 @@ public class TripPlanService {
     public TripPlanResponseDTO patchPlan(Long planId, TripPlanPatchRequestDTO requestDTO) {
 
         TripPlan existingPlan = tripPlanRepository.findById(planId)
-                .orElseThrow(() -> new IllegalArgumentException("Plan not found: " + planId));
+                .orElseThrow(() -> new IllegalArgumentException("여행 플랜을 찾을 수 없습니다!: " + planId));
 
         existingPlan.update(requestDTO);
 
         return new TripPlanResponseDTO(planId, "여행 플랜 수정하였습니다.");
+    }
+
+    /**
+     * 여행 멤버 추가
+     */
+    @Transactional
+    public TripPlanResponseDTO addTripMember(Long planId, AddTripMemberRequestDTO addDTO){
+
+        // 여행 플랜 조회
+        TripPlan existingPlan = tripPlanRepository.findById(planId)
+                .orElseThrow(() -> new IllegalArgumentException("여행 플랜을 찾을 수 없습니다!" + planId));
+
+        // 사용자 조회
+        User user = userRepository.findByEmail(addDTO.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다!" + planId));
+
+        // TODO 저축 플랜 문구
+        TripMember tripMember = TripMember.builder()
+                .user(user)
+                .tripPlan(existingPlan)
+                .memberRole(MemberRole.MEMBER)
+                .build();
+
+        tripMember.addTripMember(existingPlan);
+
+        return new TripPlanResponseDTO(planId, "여행 플랜 수정하였습니다.");
+
     }
 
     /**
