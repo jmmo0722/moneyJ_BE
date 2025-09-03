@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
 public class AddTripMemberRequestDTO {
 
-    private String email;
+    private List<String> email;
 }

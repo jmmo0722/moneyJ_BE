@@ -28,13 +28,7 @@ public class TripPlanRequestDTO {
     private String city;
 
     @NotNull
-    private Integer flightCost;
-    @NotNull
-    private Integer accommodationCost;
-    @NotNull
-    private Integer foodCost;
-    @NotNull
-    private Integer otherCost;
+    private List<CategoryDTO> categoryDTOList;
 
     @Min(1)
     private Integer duration;
@@ -55,5 +49,5 @@ public class TripPlanRequestDTO {
     private LocalDate targetDate;
 
     @NotNull
-    private List<String> tripMemberList;
+    private List<String> tripMemberEmail;
 }
