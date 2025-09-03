@@ -17,8 +17,6 @@ public class Category {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long categoryId;
 
-    private String categoryCode; // food, transportation..
-
     private String categoryName;
 
     private Integer amount;
