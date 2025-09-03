@@ -144,7 +144,7 @@ public class TripPlanService {
 
         tripMember.addTripMember(existingPlan);
 
-        return new TripPlanResponseDTO(planId, "여행 플랜 수정하였습니다.");
+        return new TripPlanResponseDTO(planId, "멤버 추가 완료");
 
     }
 

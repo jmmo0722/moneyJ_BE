@@ -29,6 +29,11 @@ public class TripPlan {
     private Integer foodCost;
     private Integer otherCost;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "trip_plan_id")
+    @Builder.Default
+    private List<Category> categoryList = new ArrayList<>();
+
     private Integer duration;
     private LocalDate tripStartDate;
     private LocalDate tripEndDate;
