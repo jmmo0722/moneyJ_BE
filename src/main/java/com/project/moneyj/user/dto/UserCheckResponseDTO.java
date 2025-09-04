@@ -19,4 +19,8 @@ public class UserCheckResponseDTO {
         );
     }
 
+    public static UserCheckResponseDTO of(boolean exists, String email) {
+        return new UserCheckResponseDTO(exists, email, null);
+    }
+
 }

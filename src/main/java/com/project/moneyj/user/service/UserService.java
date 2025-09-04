@@ -2,9 +2,14 @@ package com.project.moneyj.user.service;
 
 import com.project.moneyj.auth.util.SecurityUtil;
 import com.project.moneyj.user.domain.User;
+import com.project.moneyj.user.dto.UserCheckRequestDTO;
 import com.project.moneyj.user.dto.UserCheckResponseDTO;
 import com.project.moneyj.user.dto.UserResponseDTO;
 import com.project.moneyj.user.repository.UserRepository;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,10 +30,25 @@ public class UserService {
         return UserResponseDTO.of(user);
     }
 
-    public UserCheckResponseDTO existsByEmail(String email) {
-        return userRepository.findByEmail(email)
-            .map(user -> UserCheckResponseDTO.of(true, user))
-            .orElse(UserCheckResponseDTO.of(false, null));
+    public List<UserCheckResponseDTO> existsByEmail(UserCheckRequestDTO request) {
+        List<String> emails = request.getEmails();
+
+        // DB에서 존재하는 유저 조회
+        List<User> existingUsers = userRepository.findAllByEmailIn(emails);
+
+        // Map<email, User> 생성
+        Map<String, User> emailToUser = existingUsers.stream()
+            .collect(Collectors.toMap(User::getEmail, Function.identity()));
+
+        // 입력 이메일 순서대로 DTO 생성, 존재하지 않으면 null 채우기
+        return emails.stream()
+            .map(email -> {
+                User user = emailToUser.get(email);
+                return user != null
+                    ? UserCheckResponseDTO.of(true, user)
+                    : UserCheckResponseDTO.of(false, email);
+            })
+            .toList();
     }
 
 }
