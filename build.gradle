@@ -41,7 +41,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 
 	// db
-	runtimeOnly 'com.mysql:mysql-connector-j'
+	runtimeOnly 'com.mysql:mysql-connector-j:8.4.0'
 
 	// ai
 	implementation 'org.springframework.ai:spring-ai-starter-model-openai'
