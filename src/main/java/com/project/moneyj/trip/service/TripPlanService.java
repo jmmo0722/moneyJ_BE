@@ -1,5 +1,10 @@
 package com.project.moneyj.trip.service;
 
+
+import com.project.moneyj.trip.domain.Category;
+import com.project.moneyj.trip.domain.MemberRole;
+import com.project.moneyj.trip.dto.*;
+import com.project.moneyj.trip.repository.*;
 import com.project.moneyj.account.domain.Account;
 import com.project.moneyj.account.repository.AccountRepository;
 import com.project.moneyj.trip.domain.TripMember;
@@ -31,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class TripPlanService {
 
     private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
     private final TripPlanRepository tripPlanRepository;
     private final TripMemberRepository tripMemberRepository;
     private final TripTipRepository tripTipRepository;
@@ -44,19 +50,12 @@ public class TripPlanService {
     public TripPlanResponseDTO createTripPlans(TripPlanRequestDTO requestDTO){
 
         // 멤버들 id 조회
-        List<User> members = userRepository.findAllByEmailIn(requestDTO.getTripMemberList());
-        for (User member : members) {
-            log.info("------------------------member: {}", member);
-        }
+        List<User> members = userRepository.findAllByEmailIn(requestDTO.getTripMemberEmail());
 
         TripPlan tripPlan = TripPlan.builder()
                 .country(requestDTO.getCountry())
                 .countryCode(requestDTO.getCountryCode())
                 .city(requestDTO.getCity())
-                .flightCost((requestDTO.getFlightCost()))
-                .accommodationCost((requestDTO.getAccommodationCost()))
-                .foodCost((requestDTO.getFoodCost()))
-                .otherCost((requestDTO.getOtherCost()))
                 .currentSavings(0)
                 .membersCount(members.size())
                 .duration(requestDTO.getDuration())
@@ -74,6 +73,16 @@ public class TripPlanService {
             TripMember tripMember = new TripMember();
             tripMember.enrollTripMember(user, saved);
             tripMemberRepository.save(tripMember);
+        }
+
+        // 카테고리 등록
+        for(CategoryDTO categoryDTO : requestDTO.getCategoryDTOList()){
+            Category category = Category.builder()
+                    .categoryName(categoryDTO.getCategoryName())
+                    .amount(categoryDTO.getAmount())
+                    .build();
+
+            saved.getCategoryList().add(category);
         }
 
         return new TripPlanResponseDTO(saved.getTripPlanId(), "여행 플랜 생성 완료");
@@ -96,26 +105,35 @@ public class TripPlanService {
      */
     @Transactional(readOnly = true)
     public TripPlanDetailResponseDTO getTripPlanDetail(Long planId, Long userId) {
+
+        // 여행 플랜 조회
         TripPlan plan = tripPlanRepository.findDetailById(planId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 플랜"));
 
-        // 문구 조회
-        List<String> savings = tripSavingPhraseRepository.findAllContentByMemberId(userId);
-        if(savings.isEmpty()) throw new IllegalArgumentException("저축 플랜이 존재하지 않습니다!");
-
-        List<String> tips = tripTipRepository.findAllByCountry(plan.getCountry());
-        if(tips.isEmpty()) throw new IllegalArgumentException("여행 팁이 존재하지 않습니다!");
-
-        // 멤버 DTO 변환
-        List<TripMember> tripMemberList = tripMemberRepository.findTripMemberByTripPlanId(planId);
-        if (tripMemberList.isEmpty()) {
+        // TripMember 가 한 명도 없는 경우
+        if (plan.getTripMemberList().isEmpty()) {
             throw new IllegalArgumentException("해당 플랜에 멤버가 존재하지 않습니다!");
         }
 
-        List<TripMemberDTO> tripMemberDTOList = tripMemberList.stream()
-                .map(TripMemberDTO::fromEntity).toList();
+        // Category 가 한 개도 없는 경우
+        if (plan.getCategoryList().isEmpty()) {
+            throw new IllegalArgumentException("해당 플랜에 아직 카테고리가 없습니다.");
+        }
 
-        return TripPlanDetailResponseDTO.fromEntity(plan, savings, tips, tripMemberDTOList);
+        // 문구 조회
+        // 저축 플랜 문구
+        List<String> savings = tripSavingPhraseRepository.findAllContentByMemberId(userId);
+        if(savings.isEmpty()) throw new IllegalArgumentException("저축 플랜이 존재하지 않습니다!");
+
+        // 여행 팁 문구
+        List<String> tips = tripTipRepository.findAllByCountry(plan.getCountry());
+        if(tips.isEmpty()) throw new IllegalArgumentException("여행 팁이 존재하지 않습니다!");
+
+        // 카테고리 조회 및 DTO 변환
+        List<Category> categoryList = categoryRepository.findByTripPlanId(planId);
+        List<CategoryDTO> categoryDTOList = categoryList.stream().map(CategoryDTO::fromEntity).toList();
+
+        return TripPlanDetailResponseDTO.fromEntity(plan, savings, tips, categoryDTOList);
     }
 
     /**
@@ -125,11 +143,39 @@ public class TripPlanService {
     public TripPlanResponseDTO patchPlan(Long planId, TripPlanPatchRequestDTO requestDTO) {
 
         TripPlan existingPlan = tripPlanRepository.findById(planId)
-                .orElseThrow(() -> new IllegalArgumentException("Plan not found: " + planId));
+                .orElseThrow(() -> new IllegalArgumentException("여행 플랜을 찾을 수 없습니다!: " + planId));
 
         existingPlan.update(requestDTO);
 
         return new TripPlanResponseDTO(planId, "여행 플랜 수정하였습니다.");
+    }
+
+    /**
+     * 여행 멤버 추가
+     */
+    @Transactional
+    public TripPlanResponseDTO addTripMember(Long planId, AddTripMemberRequestDTO addDTO){
+
+        // 여행 플랜 조회
+        TripPlan existingPlan = tripPlanRepository.findById(planId)
+                .orElseThrow(() -> new IllegalArgumentException("여행 플랜을 찾을 수 없습니다!" + planId));
+
+        // 사용자 조회
+        for(String email : addDTO.getEmail()){
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다!" + email));
+
+            TripMember tripMember = TripMember.builder()
+                    .user(user)
+                    .memberRole(MemberRole.MEMBER)
+                    .build();
+
+            tripMember.addTripMember(existingPlan);
+        }
+
+
+        return new TripPlanResponseDTO(planId, "멤버 추가 완료");
+
     }
 
     /**

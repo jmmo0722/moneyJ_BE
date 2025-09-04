@@ -43,6 +43,7 @@ public class TripController {
 
     /**
      * 여행 플랜 조회
+     * 사용자별 여행 플랜 리스트 반환
      */
     @GetMapping
     public ResponseEntity<List<TripPlanListResponseDTO>> getUserTripPlans(@AuthenticationPrincipal CustomOAuth2User customUser){
@@ -70,6 +71,18 @@ public class TripController {
             @RequestBody TripPlanPatchRequestDTO requestDTO){
 
         TripPlanResponseDTO updatedPlan = tripPlanService.patchPlan(planId, requestDTO);
+        return ResponseEntity.ok(updatedPlan);
+    }
+
+    /**
+     * 여행 멤버 추가
+     */
+    @PostMapping("/{planId}/members")
+    public ResponseEntity<TripPlanResponseDTO> addTripMember(
+            @PathVariable Long planId,
+            @RequestBody AddTripMemberRequestDTO addTripMemberRequestDTO){
+
+        TripPlanResponseDTO updatedPlan = tripPlanService.addTripMember(planId, addTripMemberRequestDTO);
         return ResponseEntity.ok(updatedPlan);
     }
 

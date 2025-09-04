@@ -1,5 +1,6 @@
 package com.project.moneyj.trip.domain;
 
+import com.project.moneyj.trip.dto.CategoryDTO;
 import com.project.moneyj.trip.dto.TripPlanPatchRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,10 +25,11 @@ public class TripPlan {
     private String countryCode;
     private String city;
 
-    private Integer flightCost;
-    private Integer accommodationCost;
-    private Integer foodCost;
-    private Integer otherCost;
+    // 단반향 관계
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "trip_plan_id")
+    @Builder.Default
+    private List<Category> categoryList = new ArrayList<>();
 
     private Integer duration;
     private LocalDate tripStartDate;
@@ -49,10 +51,17 @@ public class TripPlan {
         if (patchRequestDTO.getCountry() != null) this.country = patchRequestDTO.getCountry();
         if (patchRequestDTO.getCountryCode() != null) this.countryCode = patchRequestDTO.getCountryCode();
         if (patchRequestDTO.getCity() != null) this.city = patchRequestDTO.getCity();
-        if (patchRequestDTO.getFlightCost() != null) this.flightCost = patchRequestDTO.getFlightCost();
-        if (patchRequestDTO.getAccommodationCost() != null) this.accommodationCost = patchRequestDTO.getAccommodationCost();
-        if (patchRequestDTO.getFoodCost() != null) this.foodCost = patchRequestDTO.getFoodCost();
-        if (patchRequestDTO.getOtherCost() != null) this.otherCost = patchRequestDTO.getOtherCost();
+        if (patchRequestDTO.getCategoryDTOList() != null) {
+            this.categoryList.clear(); // 기존 카테고리 삭제 (orphanRemoval = true 설정 시 DB 에서도 삭제됨)
+
+            for (CategoryDTO dto : patchRequestDTO.getCategoryDTOList()) {
+                Category category = Category.builder()
+                        .categoryName(dto.getCategoryName())
+                        .amount(dto.getAmount())
+                        .build();
+                this.categoryList.add(category);
+            }
+        }
         if (patchRequestDTO.getDuration() != null) this.duration = patchRequestDTO.getDuration();
         if (patchRequestDTO.getTripStartDate() != null) this.tripStartDate = patchRequestDTO.getTripStartDate();
         if (patchRequestDTO.getTripEndDate() != null) this.tripEndDate = patchRequestDTO.getTripEndDate();

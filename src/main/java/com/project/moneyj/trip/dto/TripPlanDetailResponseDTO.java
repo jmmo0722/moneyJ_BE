@@ -2,14 +2,13 @@ package com.project.moneyj.trip.dto;
 
 import com.project.moneyj.trip.domain.TripMember;
 import com.project.moneyj.trip.domain.TripPlan;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -25,10 +24,7 @@ public class TripPlanDetailResponseDTO {
     private String countryCode;
     private String city;
 
-    private Integer flightCost;
-    private Integer accommodationCost;
-    private Integer foodCost;
-    private Integer otherCost;
+    private List<CategoryDTO> categoryDTOList;
 
     private Integer duration;
     private LocalDate tripStartDate;
@@ -45,16 +41,19 @@ public class TripPlanDetailResponseDTO {
 
     private List<TripMemberDTO> tripMemberDTOList;
 
-    public static TripPlanDetailResponseDTO fromEntity(TripPlan tripPlan, List<String> savingsPhrase, List<String> tripTip, List<TripMemberDTO> tripMemberDTOList){
+    public static TripPlanDetailResponseDTO fromEntity(
+            TripPlan tripPlan,
+            List<String> savingsPhrase,
+            List<String> tripTip,
+            List<CategoryDTO> categoryDTOList)
+
+    {
         return TripPlanDetailResponseDTO.builder()
                 .planId(tripPlan.getTripPlanId())
                 .country(tripPlan.getCountry())
                 .countryCode(tripPlan.getCountryCode())
                 .city(tripPlan.getCity())
-                .flightCost(tripPlan.getFlightCost())
-                .accommodationCost(tripPlan.getAccommodationCost())
-                .flightCost(tripPlan.getFoodCost())
-                .otherCost(tripPlan.getOtherCost())
+                .categoryDTOList(categoryDTOList)
                 .duration(tripPlan.getDuration())
                 .tripStartDate(tripPlan.getTripStartDate())
                 .tripEndDate(tripPlan.getTripEndDate())
@@ -64,7 +63,7 @@ public class TripPlanDetailResponseDTO {
                 .targetDate(tripPlan.getTargetDate())
                 .savingsPhrase(savingsPhrase)
                 .tripTip(tripTip)
-                .tripMemberDTOList(tripMemberDTOList)
+                .tripMemberDTOList(tripPlan.getTripMemberList().stream().map(TripMemberDTO::fromEntity).toList())
                 .build();
     }
 

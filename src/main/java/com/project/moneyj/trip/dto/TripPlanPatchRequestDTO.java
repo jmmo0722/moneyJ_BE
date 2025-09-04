@@ -23,10 +23,7 @@ public class TripPlanPatchRequestDTO {
     private String countryCode;
     private String city;
 
-    private Integer flightCost;
-    private Integer accommodationCost;
-    private Integer foodCost;
-    private Integer otherCost;
+    private List<CategoryDTO> categoryDTOList;
 
     private Integer duration;
     private LocalDate tripStartDate;

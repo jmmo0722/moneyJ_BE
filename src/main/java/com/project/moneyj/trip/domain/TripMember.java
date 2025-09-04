@@ -32,6 +32,7 @@ public class TripMember {
     @OneToMany(mappedBy = "tripMember", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TripSavingPhrase> tripSavingPhrase = new ArrayList<>();
 
+    // 여행 플랜 등록 연관관계 메소드
     public void enrollTripMember(User user, TripPlan tripPlan){
         this.user = user;
         user.getTripMemberList().add(this);
@@ -39,7 +40,14 @@ public class TripMember {
         this.tripPlan = tripPlan;
         tripPlan.getTripMemberList().add(this);
 
+        // TODO 저축 플랜 문구
         // TODO 후에 방장과 멤버 역할 구분 로직 작성
         this.memberRole = MemberRole.MEMBER;
+    }
+
+    // 멤버 추가 연관관계 편의 메서드
+    public void addTripMember(TripPlan tripPlan) {
+        this.tripPlan = tripPlan;
+        tripPlan.getTripMemberList().add(this);
     }
 }

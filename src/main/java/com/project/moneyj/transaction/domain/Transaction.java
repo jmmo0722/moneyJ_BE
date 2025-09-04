@@ -1,5 +1,6 @@
 package com.project.moneyj.transaction.domain;
 
+import com.project.moneyj.trip.domain.Category;
 import com.project.moneyj.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,9 +25,7 @@ public class Transaction {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
+    private TransactionCategory transactionCategory;
 
     private LocalDate usedDate;
 

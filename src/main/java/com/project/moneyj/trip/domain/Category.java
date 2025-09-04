@@ -1,4 +1,4 @@
-package com.project.moneyj.transaction.domain;
+package com.project.moneyj.trip.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,11 +15,9 @@ import lombok.NoArgsConstructor;
 public class Category {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long category_id;
-
-    private String categoryCode; // food, transportation..
+    private Long categoryId;
 
     private String categoryName;
 
-
+    private Integer amount;
 }
