@@ -1,22 +1,29 @@
 package com.project.moneyj.trip.service;
 
-import com.project.moneyj.trip.domain.MemberRole;
+import com.project.moneyj.account.domain.Account;
+import com.project.moneyj.account.repository.AccountRepository;
 import com.project.moneyj.trip.domain.TripMember;
 import com.project.moneyj.trip.domain.TripPlan;
-import com.project.moneyj.trip.dto.*;
+import com.project.moneyj.trip.dto.TripMemberDTO;
+import com.project.moneyj.trip.dto.TripPlanDetailResponseDTO;
+import com.project.moneyj.trip.dto.TripPlanListResponseDTO;
+import com.project.moneyj.trip.dto.TripPlanPatchRequestDTO;
+import com.project.moneyj.trip.dto.TripPlanRequestDTO;
+import com.project.moneyj.trip.dto.TripPlanResponseDTO;
+import com.project.moneyj.trip.dto.UserBalanceResponseDTO;
 import com.project.moneyj.trip.repository.TripMemberRepository;
 import com.project.moneyj.trip.repository.TripPlanRepository;
 import com.project.moneyj.trip.repository.TripSavingPhraseRepository;
 import com.project.moneyj.trip.repository.TripTipRepository;
 import com.project.moneyj.user.domain.User;
 import com.project.moneyj.user.repository.UserRepository;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @Slf4j
@@ -28,6 +35,7 @@ public class TripPlanService {
     private final TripMemberRepository tripMemberRepository;
     private final TripTipRepository tripTipRepository;
     private final TripSavingPhraseRepository tripSavingPhraseRepository;
+    private final AccountRepository accountRepository;
 
     /**
      * 여행 플랜 생성
@@ -147,5 +155,32 @@ public class TripPlanService {
         tripMemberRepository.delete(memberToRemove);
 
         return new TripPlanResponseDTO(planId, "해당 플랜을 삭제하였습니다.");
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserBalanceResponseDTO> getUserBalances(Long tripPlanId) {
+        List<Account> accounts = accountRepository.findByTripPlanId(tripPlanId);
+
+        return accounts.stream()
+            .map(a -> {
+                double rawProgress = 0.0;
+                TripPlan tp = a.getTripPlan();
+                if (tp != null && tp.getTotalBudget() != null && tp.getTotalBudget() > 0) {
+                    rawProgress = (a.getBalance() * 100.0) / tp.getTotalBudget();
+                }
+                // 소수점 1자리로 반올림
+                double progress = new BigDecimal(rawProgress)
+                    .setScale(1, RoundingMode.HALF_UP)
+                    .doubleValue();
+
+                return new UserBalanceResponseDTO(
+                    a.getUser().getUserId(),
+                    a.getUser().getNickname(),
+                    a.getUser().getProfileImage(),
+                    a.getBalance(),
+                    progress
+                );
+            })
+            .toList();
     }
 }

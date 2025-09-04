@@ -2,6 +2,7 @@ package com.project.moneyj.user.service;
 
 import com.project.moneyj.auth.util.SecurityUtil;
 import com.project.moneyj.user.domain.User;
+import com.project.moneyj.user.dto.UserCheckResponseDTO;
 import com.project.moneyj.user.dto.UserResponseDTO;
 import com.project.moneyj.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,4 +24,11 @@ public class UserService {
 
         return UserResponseDTO.of(user);
     }
+
+    public UserCheckResponseDTO existsByEmail(String email) {
+        return userRepository.findByEmail(email)
+            .map(user -> UserCheckResponseDTO.of(true, user))
+            .orElse(UserCheckResponseDTO.of(false, null));
+    }
+
 }
