@@ -1,13 +1,15 @@
 package com.project.moneyj.user.controller;
 
+import com.project.moneyj.user.dto.UserCheckRequestDTO;
 import com.project.moneyj.user.dto.UserCheckResponseDTO;
 import com.project.moneyj.user.dto.UserResponseDTO;
 import com.project.moneyj.user.service.UserService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -26,8 +28,10 @@ public class UserController {
     }
 
     @GetMapping("/check")
-    public ResponseEntity<UserCheckResponseDTO> checkUserByEmail(@RequestParam String email) {
-        UserCheckResponseDTO response = userService.existsByEmail(email);
+    public ResponseEntity<List<UserCheckResponseDTO>> checkUserByEmail(
+        @RequestBody UserCheckRequestDTO request
+    ) {
+        List<UserCheckResponseDTO> response = userService.existsByEmail(request);
 
         return ResponseEntity.ok(response);
     }
