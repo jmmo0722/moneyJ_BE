@@ -7,8 +7,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
 public class PromptLoader {
-    private PromptLoader(){}
+    private PromptLoader(){} //생성자 생성 제한
 
+    /**
+     * 지정된 경로의 resources 파일을 읽어서 문자열로 반환
+     */
     public static String load(final String path) {
         try (InputStream inputStream = PromptLoader.class.getResourceAsStream(path)) {
             if (inputStream == null) {
