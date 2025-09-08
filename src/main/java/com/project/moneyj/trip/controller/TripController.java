@@ -9,6 +9,8 @@ import com.project.moneyj.trip.dto.TripPlanPatchRequestDTO;
 import com.project.moneyj.trip.dto.TripPlanRequestDTO;
 import com.project.moneyj.trip.dto.TripPlanResponseDTO;
 import com.project.moneyj.trip.dto.UserBalanceResponseDTO;
+import com.project.moneyj.trip.dto.TripBudgetResponseDTO;
+import com.project.moneyj.trip.dto.TripBudgetRequestDTO;
 import com.project.moneyj.trip.service.TripPlanService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -106,4 +108,12 @@ public class TripController {
         return tripPlanService.getUserBalances(tripPlanId);
     }
 
+    /**
+     * 여행 경비 계산
+     */
+    @PostMapping("/budget")
+    public ResponseEntity<TripBudgetResponseDTO> getTripBudget(@RequestBody TripBudgetRequestDTO request) {
+        TripBudgetResponseDTO budget = tripPlanService.getTripBudget(request);
+        return ResponseEntity.ok(budget);
+    }
 }
