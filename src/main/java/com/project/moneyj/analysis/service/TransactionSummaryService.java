@@ -3,6 +3,7 @@ package com.project.moneyj.analysis.service;
 
 import com.project.moneyj.analysis.domain.TransactionSummary;
 import com.project.moneyj.analysis.dto.MonthlySummaryDTO;
+import com.project.moneyj.analysis.dto.MonthlySummaryDTO.CategorySummaryDTO;
 import com.project.moneyj.analysis.repository.TransactionSummaryRepository;
 import com.project.moneyj.transaction.domain.Transaction;
 import com.project.moneyj.transaction.domain.TransactionCategory;
@@ -17,6 +18,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
@@ -181,4 +183,10 @@ public class TransactionSummaryService {
         transactionSummaryRepository.saveAll(updates);
     }
 
+    @Transactional(readOnly = true)
+    public Optional<CategorySummaryDTO> getMonthlyCategorySummary(Long userId, String month, TransactionCategory category) {
+        return transactionSummaryRepository
+            .findByUser_UserIdAndSummaryMonthAndTransactionCategory(userId, month, category)
+            .map(CategorySummaryDTO::from);
+    }
 }
