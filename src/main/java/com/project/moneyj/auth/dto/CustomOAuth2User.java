@@ -11,10 +11,12 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 public class CustomOAuth2User implements OAuth2User {
     private final User user;
     private final Map<String, Object> attributes;
+    private final boolean isFirstLogin;
 
-    public CustomOAuth2User(User user, Map<String, Object> attributes) {
+    public CustomOAuth2User(User user, Map<String, Object> attributes, boolean isFirstLogin) {
         this.user = user;
         this.attributes = attributes;
+        this.isFirstLogin = isFirstLogin;
     }
 
     @Override
@@ -42,6 +44,10 @@ public class CustomOAuth2User implements OAuth2User {
 
     public String getNickname() {
         return user.getNickname();
+    }
+
+    public boolean isFirstLogin() {
+        return isFirstLogin;
     }
 
 }

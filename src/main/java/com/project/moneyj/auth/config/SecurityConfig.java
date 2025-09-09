@@ -1,7 +1,9 @@
 package com.project.moneyj.auth.config;
 
+import com.project.moneyj.auth.dto.CustomOAuth2User;
 import com.project.moneyj.auth.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,6 +19,9 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
+
+    @Value("${spring.redirect.frontend-url}")
+    private String frontendUrl;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -37,8 +42,12 @@ public class SecurityConfig {
                 )
                 // 로그인 리다이렉트 대신 실패 시 401 반환
                 .successHandler((request, response, authentication) -> {
-                    response.setContentType("application/json;charset=UTF-8");
-                    response.getWriter().write("{\"status\":\"success\",\"message\":\"로그인 성공\"}");
+                    CustomOAuth2User customUser = (CustomOAuth2User) authentication.getPrincipal();
+                    if (customUser.isFirstLogin()) {
+                        response.sendRedirect(frontendUrl + "/agree");
+                    } else {
+                        response.sendRedirect(frontendUrl + "/home");
+                    }
                 })
                 .failureHandler((request, response, exception) -> {
                     response.setContentType("application/json;charset=UTF-8");
