@@ -1,6 +1,7 @@
 package com.project.moneyj.trip.service;
 
 
+import com.project.moneyj.openai.util.PromptLoader;
 import com.project.moneyj.trip.domain.Category;
 import com.project.moneyj.trip.domain.MemberRole;
 import com.project.moneyj.trip.dto.*;
@@ -16,6 +17,8 @@ import com.project.moneyj.trip.dto.TripPlanPatchRequestDTO;
 import com.project.moneyj.trip.dto.TripPlanRequestDTO;
 import com.project.moneyj.trip.dto.TripPlanResponseDTO;
 import com.project.moneyj.trip.dto.UserBalanceResponseDTO;
+import com.project.moneyj.trip.dto.TripBudgetResponseDTO;
+import com.project.moneyj.trip.dto.TripBudgetRequestDTO;
 import com.project.moneyj.trip.repository.TripMemberRepository;
 import com.project.moneyj.trip.repository.TripPlanRepository;
 import com.project.moneyj.trip.repository.TripSavingPhraseRepository;
@@ -27,6 +30,7 @@ import java.math.RoundingMode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +46,7 @@ public class TripPlanService {
     private final TripTipRepository tripTipRepository;
     private final TripSavingPhraseRepository tripSavingPhraseRepository;
     private final AccountRepository accountRepository;
+    private final ChatClient chatClient;
 
     /**
      * 여행 플랜 생성
@@ -172,8 +177,6 @@ public class TripPlanService {
 
             tripMember.addTripMember(existingPlan);
         }
-
-
         return new TripPlanResponseDTO(planId, "멤버 추가 완료");
 
     }
@@ -228,5 +231,29 @@ public class TripPlanService {
                 );
             })
             .toList();
+    }
+    /**
+     * 여행 경비 계산 관련 Prompt
+     */
+    public TripBudgetResponseDTO getTripBudget(TripBudgetRequestDTO request) {
+
+        String promptTemplate = PromptLoader.load("/prompts/trip_budget.txt");
+
+        String promptText = String.format(
+                promptTemplate,
+                request.getCountry(),
+                request.getCity(),
+                request.getNights(),
+                request.getDays(),
+                request.getStartDate(),
+                request.getEndDate()
+        );
+
+        return chatClient
+                .prompt()
+                .system("너는 여행 경비 분석가야. 반드시 JSON으로만 답변해야 한다.")
+                .user(promptText)
+                .call()
+                .entity(TripBudgetResponseDTO.class);
     }
 }

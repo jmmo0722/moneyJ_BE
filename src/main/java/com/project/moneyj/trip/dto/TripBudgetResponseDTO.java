@@ -1,4 +1,5 @@
-package com.project.moneyj.openai.dto;
+package com.project.moneyj.trip.dto;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +10,5 @@ public class TripBudgetResponseDTO {
     private int flightCost;
     private int accommodationCost;
     private int foodCost;
-    private int otherCost;
     private int totalCost;
 }

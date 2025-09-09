@@ -7,6 +7,7 @@ import com.project.moneyj.user.domain.Role;
 import com.project.moneyj.user.domain.User;
 import com.project.moneyj.user.repository.UserRepository;
 import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -34,8 +35,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
 
         // DB에 사용자 존재 여부 확인
-        User user = userRepository.findByEmail(userInfo.getEmail())
-            .orElseGet(() -> {
+        Optional<User> optionalUser = userRepository.findByEmail(userInfo.getEmail());
+        boolean isFirstLogin = optionalUser.isEmpty();
+
+        User user = optionalUser.orElseGet(() -> {
                 User newUser = new User(
                     userInfo.getNickname(),
                     userInfo.getEmail(),
@@ -46,6 +49,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             });
 
         // Spring Security 세션 인증 객체 생성
-        return new CustomOAuth2User(user, attributes);
+        return new CustomOAuth2User(user, attributes, isFirstLogin);
     }
 }
