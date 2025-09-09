@@ -2,9 +2,10 @@ package com.project.moneyj.codef.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.moneyj.codef.config.CodefProperties;
-import com.project.moneyj.codef.dto.BankAccountListReq;
-import com.project.moneyj.codef.dto.BankTxnListReq;
+import com.project.moneyj.codef.dto.BankAccountListReqDTO;
+import com.project.moneyj.codef.dto.BankTxnListReqDTO;
 import com.project.moneyj.codef.repository.CodefConnectedIdRepository;
+import com.project.moneyj.codef.util.ApiResponseDecoder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -27,12 +28,12 @@ public class CodefBankService {
     private final ObjectMapper mapper = new ObjectMapper();
 
     // 3-1) 계좌 목록
-    public String fetchBankAccounts(Long userId, String organization) {
+    public Map<String, Object> fetchBankAccounts(Long userId, String organization) {
         String cid = cidRepo.findByUserId(userId)
                 .orElseThrow(() -> new IllegalStateException("Connected ID 없음"))
                 .getConnectedId();
 
-        BankAccountListReq req = BankAccountListReq.builder()
+        BankAccountListReqDTO req = BankAccountListReqDTO.builder()
                 .countryCode("KR").businessType("BK").clientType("P")
                 .organization(organization)
                 .connectedId(cid)
@@ -52,11 +53,12 @@ public class CodefBankService {
                 .block();
 
         log.info("bank account-list raw={}", raw);
-        return raw;
+
+        return ApiResponseDecoder.decode(raw);
     }
 
     // 3-2) 거래내역
-    public String fetchTransactions(Long userId, BankTxnListReq req) {
+    public Map<String, Object> fetchTransactions(Long userId, BankTxnListReqDTO req) {
         String cid = cidRepo.findByUserId(userId)
                 .orElseThrow(() -> new IllegalStateException("Connected ID 없음"))
                 .getConnectedId();
@@ -90,7 +92,7 @@ public class CodefBankService {
         String url = props.getBaseUrl() + "/v1/kr/bank/p/account/transaction-list";
         String token = authService.getValidAccessToken();
 
-        return codefWebClient.post()
+        String encodeResponse = codefWebClient.post()
                 .uri(url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .headers(h -> h.setBearerAuth(token))
@@ -98,5 +100,7 @@ public class CodefBankService {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
+
+        return ApiResponseDecoder.decode(encodeResponse);
     }
 }

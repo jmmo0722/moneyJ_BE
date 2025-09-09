@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BankTxnListReq {
+public class BankTxnListReqDTO {
 
     private String organization;   // "0004"
     private String account;        // 계좌번호

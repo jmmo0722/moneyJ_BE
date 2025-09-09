@@ -6,13 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountAddRequest {
+public class AccountListResponseDTO {
 
-    private String connectedId; // 서버에서 userId로 조회해서 넣어도 됨
-    private List<AccountCreateRequest.AccountInput> accountList;
+    private Map<String, Object> result;
+    private List<Map<String, Object>> data; // 기관별 등록 상태 등
 }

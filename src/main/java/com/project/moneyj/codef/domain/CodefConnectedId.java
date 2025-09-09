@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 public class CodefConnectedId {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="codef_connected_id", nullable=false)
     private Long id;
 
     @Column(name="user_id", nullable=false)

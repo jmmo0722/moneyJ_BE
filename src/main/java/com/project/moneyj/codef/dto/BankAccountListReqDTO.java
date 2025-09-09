@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BankAccountListReq {
+public class BankAccountListReqDTO {
 
     private String countryCode;   // "KR"
     private String businessType;  // "BK"

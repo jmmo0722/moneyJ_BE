@@ -2,7 +2,7 @@ package com.project.moneyj.codef.service;
 
 import com.project.moneyj.codef.config.CodefProperties;
 import com.project.moneyj.codef.domain.CodefToken;
-import com.project.moneyj.codef.dto.TokenResponse;
+import com.project.moneyj.codef.dto.TokenResponseDTO;
 import com.project.moneyj.codef.repository.CodefTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -30,7 +30,7 @@ public class CodefAuthService {
      */
     @Transactional
     public String getValidAccessToken() {
-        var latestOpt = tokenRepository.findTopByOrderByIdDesc();
+        var latestOpt = tokenRepository.findTopByOrderByCodefTokenIdDesc();
         var now = LocalDateTime.now();
 
         if (latestOpt.isPresent()) {
@@ -40,7 +40,7 @@ public class CodefAuthService {
                 return latest.getAccessToken();
             }
             log.info("CODEF access_token 만료 임박 → 갱신 시도");
-            return refresh(latest.getId());
+            return refresh(latest.getCodefTokenId());
         }
 
         log.info("CODEF access_token 없음 → 최초 발급");
@@ -48,7 +48,7 @@ public class CodefAuthService {
     }
 
     private String issueFirst() {
-        TokenResponse res = requestAccessToken();
+        TokenResponseDTO res = requestAccessToken();
         var newToken = CodefToken.builder()
                 .accessToken(res.getAccessToken())
                 .expiresAt(LocalDateTime.now().plusSeconds(res.getExpiresIn()))
@@ -58,7 +58,7 @@ public class CodefAuthService {
     }
 
     private String refresh(Long idToUpdate) {
-        TokenResponse res = requestAccessToken();
+        TokenResponseDTO res = requestAccessToken();
 
         CodefToken token = tokenRepository.findById(idToUpdate)
                 .orElseGet(CodefToken::new);
@@ -76,7 +76,7 @@ public class CodefAuthService {
      * - Content-Type: application/x-www-form-urlencoded
      * - body: grant_type=client_credentials
      */
-    private TokenResponse requestAccessToken() {
+    private TokenResponseDTO requestAccessToken() {
 
         // 1) 토큰 URL을 명시적으로 분리(원하면 oauth.codef.io로 설정)
         String url = "https://oauth.codef.io/oauth/token";
@@ -94,7 +94,7 @@ public class CodefAuthService {
                         .with("client_secret", props.getClientSecret())
                         .with("scope", "read")) // scope 필요 없으면 제거 가능
                 .retrieve()
-                .bodyToMono(TokenResponse.class)
+                .bodyToMono(TokenResponseDTO.class)
                 .blockOptional()
                 .orElseThrow(() -> new IllegalStateException("CODEF 토큰 응답 파싱 실패"));
     }

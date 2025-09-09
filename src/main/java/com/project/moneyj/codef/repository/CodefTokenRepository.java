@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface CodefTokenRepository extends JpaRepository<CodefToken, Long> {
 
-    Optional<CodefToken> findTopByOrderByIdDesc();
+    Optional<CodefToken> findTopByOrderByCodefTokenIdDesc();
 }

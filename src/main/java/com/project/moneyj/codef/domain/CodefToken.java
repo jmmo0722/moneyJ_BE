@@ -1,6 +1,6 @@
 package com.project.moneyj.codef.domain;
 
-import com.project.moneyj.codef.dto.TokenResponse;
+import com.project.moneyj.codef.dto.TokenResponseDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +18,8 @@ import java.time.LocalDateTime;
 public class CodefToken {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "codef_token_id", nullable = false)
+    private Long codefTokenId;
 
     @Column(name = "access_token", nullable = false, length = 2048)
     private String accessToken;
@@ -35,7 +36,7 @@ public class CodefToken {
     }
 
     // 비즈니스 메소드
-    public void getToken(TokenResponse tokenResponse){
+    public void getToken(TokenResponseDTO tokenResponse){
         this.accessToken = tokenResponse.getAccessToken();
         this.expiresAt = LocalDateTime.now().plusSeconds(tokenResponse.getExpiresIn());
     }
