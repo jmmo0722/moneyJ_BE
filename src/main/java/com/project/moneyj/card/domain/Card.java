@@ -3,17 +3,14 @@ package com.project.moneyj.card.domain;
 import com.project.moneyj.trip.domain.TripPlan;
 import com.project.moneyj.user.domain.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "account")
+@Table(name = "card")
 public class Card {
 
     @Id
