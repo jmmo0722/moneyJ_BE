@@ -11,7 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,21 +35,18 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     private TransactionCategory transactionCategory;
 
-    private LocalDate usedDate;
+    private LocalDateTime usedDateTime; // resUsedDate + resUsedTime
 
-    private Integer amount;
-    private String merchantName;
-    private Integer paymentAmount;
-    private Integer afterPaymentBalance;
-    private Long approvalNo;
-    private String merchantType;
-    private String merchantAddr;
-    private Long merchantNo;
+    private Integer usedAmount;
 
-    private String categoryCode;
+    private String storeName;
+    private String storeCorpNo;
+    private String storeAddr;
+    private String storeNo;
+    private String storeType;
+    private String approvalNo;
 
-    private LocalDate updateAt;
-
+    private LocalDateTime updateAt;
 
     // 연관관계 메소드
     public void addTransaction(User user){

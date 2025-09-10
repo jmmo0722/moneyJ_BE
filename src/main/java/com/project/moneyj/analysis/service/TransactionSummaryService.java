@@ -11,6 +11,7 @@ import com.project.moneyj.transaction.repository.TransactionRepository;
 import com.project.moneyj.user.domain.User;
 import com.project.moneyj.user.repository.UserRepository;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -89,10 +90,10 @@ public class TransactionSummaryService {
         YearMonth from = base.minusMonths(5); // 최근 6개월 시작
 
         // 최근 6개월 거래 조회
-        List<Transaction> transactions = transactionRepository.findByUser_UserIdAndUsedDateBetween(
+        List<Transaction> transactions = transactionRepository.findByUser_UserIdAndUsedDateTimeBetween(
             userId,
-            from.atDay(1),
-            base.atEndOfMonth()
+            from.atDay(1).atStartOfDay(),
+            base.atEndOfMonth().atTime(LocalTime.MAX)
         );
 
         if (transactions.isEmpty()) return;
@@ -100,7 +101,7 @@ public class TransactionSummaryService {
         // 월 + 카테고리 단위 그룹화
         Map<YearMonth, Map<TransactionCategory, List<Transaction>>> grouped = transactions.stream()
             .collect(Collectors.groupingBy(
-                t -> YearMonth.from(t.getUsedDate()),
+                t -> YearMonth.from(t.getUsedDateTime()),
                 Collectors.groupingBy(Transaction::getTransactionCategory)
             ));
 
@@ -116,7 +117,7 @@ public class TransactionSummaryService {
                     user,
                     category,
                     month.toString(),
-                    txs.stream().mapToInt(Transaction::getAmount).sum(),
+                    txs.stream().mapToInt(Transaction::getUsedAmount).sum(),
                     txs.size(),
                     LocalDate.now()
                 ));
@@ -151,7 +152,7 @@ public class TransactionSummaryService {
             TransactionCategory category = entry.getKey();
             List<Transaction> txs = entry.getValue();
 
-            int newTotal = txs.stream().mapToInt(Transaction::getAmount).sum();
+            int newTotal = txs.stream().mapToInt(Transaction::getUsedAmount).sum();
             int newCount = txs.size();
 
             if (summaryMap.containsKey(category)) {
