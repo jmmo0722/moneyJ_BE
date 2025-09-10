@@ -31,7 +31,6 @@ public class TripPlanDetailResponseDTO {
     private LocalDate tripEndDate;
 
     private Integer totalBudget;
-    private Integer currentSavings;
 
     private LocalDate startDate;
     private LocalDate targetDate;
@@ -58,7 +57,6 @@ public class TripPlanDetailResponseDTO {
                 .tripStartDate(tripPlan.getTripStartDate())
                 .tripEndDate(tripPlan.getTripEndDate())
                 .totalBudget(tripPlan.getTotalBudget())
-                .currentSavings(tripPlan.getCurrentSavings())
                 .startDate(tripPlan.getStartDate())
                 .targetDate(tripPlan.getTargetDate())
                 .savingsPhrase(savingsPhrase)

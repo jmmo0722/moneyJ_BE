@@ -61,7 +61,6 @@ public class TripPlanService {
                 .country(requestDTO.getCountry())
                 .countryCode(requestDTO.getCountryCode())
                 .city(requestDTO.getCity())
-                .currentSavings(0)
                 .membersCount(members.size())
                 .duration(requestDTO.getDuration())
                 .tripStartDate(requestDTO.getTripStartDate())
@@ -137,6 +136,7 @@ public class TripPlanService {
         // 카테고리 조회 및 DTO 변환
         List<Category> categoryList = categoryRepository.findByTripPlanId(planId);
         List<CategoryDTO> categoryDTOList = categoryList.stream().map(CategoryDTO::fromEntity).toList();
+
 
         return TripPlanDetailResponseDTO.fromEntity(plan, savings, tips, categoryDTOList);
     }

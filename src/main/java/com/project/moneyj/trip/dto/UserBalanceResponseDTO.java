@@ -10,6 +10,6 @@ public class UserBalanceResponseDTO {
     private Long userId;
     private String nickname;
     private String profileImage;
-    private Long balance;
+    private Integer balance;
     private double progress; // 달성률 %
 }

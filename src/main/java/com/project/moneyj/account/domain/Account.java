@@ -10,20 +10,19 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.Getter;
+import lombok.*;
 
+@Data
 @Entity
-@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "account")
 public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long accountId;
-
-    private String accountNumber;
-
-    private Long balance;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -32,6 +31,20 @@ public class Account {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trip_plan_id")
     private TripPlan tripPlan;
+
+    private String accountNumber;
+
+    private String accountNumberMasked;
+
+    private Integer balance;
+
+    private String organizationCode;
+
+    private String accountName;
+
+    public void updateBalance(Integer balance) {
+        this.balance = balance;
+    }
 
 }
 

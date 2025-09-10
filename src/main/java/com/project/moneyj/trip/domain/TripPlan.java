@@ -27,7 +27,7 @@ public class TripPlan {
 
     // 단반향 관계
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "trip_plan_id")
+    @JoinColumn(name = "category_id")
     @Builder.Default
     private List<Category> categoryList = new ArrayList<>();
 
@@ -36,7 +36,6 @@ public class TripPlan {
     private LocalDate tripEndDate;
 
     private Integer totalBudget;
-    private Integer currentSavings;
 
     private LocalDate startDate;
     private LocalDate targetDate;
@@ -66,7 +65,6 @@ public class TripPlan {
         if (patchRequestDTO.getTripStartDate() != null) this.tripStartDate = patchRequestDTO.getTripStartDate();
         if (patchRequestDTO.getTripEndDate() != null) this.tripEndDate = patchRequestDTO.getTripEndDate();
         if (patchRequestDTO.getTotalBudget() != null) this.totalBudget = patchRequestDTO.getTotalBudget();
-        if (patchRequestDTO.getCurrentSavings() != null) this.currentSavings = patchRequestDTO.getCurrentSavings();
         if (patchRequestDTO.getStartDate() != null) this.startDate = patchRequestDTO.getStartDate();
         if (patchRequestDTO.getTargetDate() != null) this.targetDate = patchRequestDTO.getTargetDate();
 
