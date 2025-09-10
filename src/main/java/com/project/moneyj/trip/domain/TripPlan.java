@@ -1,6 +1,5 @@
 package com.project.moneyj.trip.domain;
 
-import com.project.moneyj.trip.dto.CategoryDTO;
 import com.project.moneyj.trip.dto.TripPlanPatchRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,11 +24,6 @@ public class TripPlan {
     private String countryCode;
     private String city;
 
-    // 단반향 관계
-    @OneToMany(mappedBy = "tripPlan", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @Builder.Default
-    private List<Category> categoryList = new ArrayList<>();
-
     private Integer days;
     private Integer nights;
     private LocalDate tripStartDate;
@@ -50,17 +44,6 @@ public class TripPlan {
         if (patchRequestDTO.getCountry() != null) this.country = patchRequestDTO.getCountry();
         if (patchRequestDTO.getCountryCode() != null) this.countryCode = patchRequestDTO.getCountryCode();
         if (patchRequestDTO.getCity() != null) this.city = patchRequestDTO.getCity();
-        if (patchRequestDTO.getCategoryDTOList() != null) {
-            this.categoryList.clear(); // 기존 카테고리 삭제 (orphanRemoval = true 설정 시 DB 에서도 삭제됨)
-
-            for (CategoryDTO dto : patchRequestDTO.getCategoryDTOList()) {
-                Category category = Category.builder()
-                        .categoryName(dto.getCategoryName())
-                        .amount(dto.getAmount())
-                        .build();
-                this.categoryList.add(category);
-            }
-        }
         if (patchRequestDTO.getDays() != null) this.days = patchRequestDTO.getDays();
         if (patchRequestDTO.getNights() != null) this.nights = patchRequestDTO.getNights();
         if (patchRequestDTO.getTripStartDate() != null) this.tripStartDate = patchRequestDTO.getTripStartDate();
