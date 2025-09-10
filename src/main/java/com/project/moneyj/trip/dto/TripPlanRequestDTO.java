@@ -31,7 +31,10 @@ public class TripPlanRequestDTO {
     private List<CategoryDTO> categoryDTOList;
 
     @Min(1)
-    private Integer duration;
+    private Integer days;
+
+    @Min(1)
+    private Integer nights;
 
     @NotNull
     private LocalDate tripStartDate;

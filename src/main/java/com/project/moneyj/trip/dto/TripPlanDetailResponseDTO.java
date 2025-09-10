@@ -26,7 +26,8 @@ public class TripPlanDetailResponseDTO {
 
     private List<CategoryDTO> categoryDTOList;
 
-    private Integer duration;
+    private Integer days;
+    private Integer nights;
     private LocalDate tripStartDate;
     private LocalDate tripEndDate;
 
@@ -53,7 +54,8 @@ public class TripPlanDetailResponseDTO {
                 .countryCode(tripPlan.getCountryCode())
                 .city(tripPlan.getCity())
                 .categoryDTOList(categoryDTOList)
-                .duration(tripPlan.getDuration())
+                .days(tripPlan.getDays())
+                .nights(tripPlan.getNights())
                 .tripStartDate(tripPlan.getTripStartDate())
                 .tripEndDate(tripPlan.getTripEndDate())
                 .totalBudget(tripPlan.getTotalBudget())

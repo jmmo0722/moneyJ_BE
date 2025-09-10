@@ -30,7 +30,8 @@ public class TripPlan {
     @Builder.Default
     private List<Category> categoryList = new ArrayList<>();
 
-    private Integer duration;
+    private Integer days;
+    private Integer nights;
     private LocalDate tripStartDate;
     private LocalDate tripEndDate;
 
@@ -60,7 +61,8 @@ public class TripPlan {
                 this.categoryList.add(category);
             }
         }
-        if (patchRequestDTO.getDuration() != null) this.duration = patchRequestDTO.getDuration();
+        if (patchRequestDTO.getDays() != null) this.days = patchRequestDTO.getDays();
+        if (patchRequestDTO.getNights() != null) this.nights = patchRequestDTO.getNights();
         if (patchRequestDTO.getTripStartDate() != null) this.tripStartDate = patchRequestDTO.getTripStartDate();
         if (patchRequestDTO.getTripEndDate() != null) this.tripEndDate = patchRequestDTO.getTripEndDate();
         if (patchRequestDTO.getTotalBudget() != null) this.totalBudget = patchRequestDTO.getTotalBudget();

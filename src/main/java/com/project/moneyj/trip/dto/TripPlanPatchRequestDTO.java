@@ -25,7 +25,8 @@ public class TripPlanPatchRequestDTO {
 
     private List<CategoryDTO> categoryDTOList;
 
-    private Integer duration;
+    private Integer days;
+    private Integer nights;
     private LocalDate tripStartDate;
     private LocalDate tripEndDate;
 
