@@ -84,6 +84,7 @@ public class TripPlanService {
             Category category = Category.builder()
                     .categoryName(categoryDTO.getCategoryName())
                     .amount(categoryDTO.getAmount())
+                    .tripPlan(saved)
                     .build();
 
             saved.getCategoryList().add(category);

@@ -26,8 +26,7 @@ public class TripPlan {
     private String city;
 
     // 단반향 관계
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @OneToMany(mappedBy = "tripPlan", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Category> categoryList = new ArrayList<>();
 

@@ -21,4 +21,8 @@ public class Category {
     private String categoryName;
 
     private Integer amount;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "trip_plan_id")
+    private TripPlan tripPlan;
 }
