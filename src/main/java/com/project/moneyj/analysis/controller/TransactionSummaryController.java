@@ -1,12 +1,11 @@
 package com.project.moneyj.analysis.controller;
 
-import com.project.moneyj.analysis.dto.MonthlySummaryDTO;
 import com.project.moneyj.analysis.dto.MonthlySummaryDTO.CategorySummaryDTO;
+import com.project.moneyj.analysis.dto.SummaryResponseDTO;
 import com.project.moneyj.analysis.service.TransactionSummaryService;
 import com.project.moneyj.auth.dto.CustomOAuth2User;
 import com.project.moneyj.transaction.domain.TransactionCategory;
 import java.time.YearMonth;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,7 +21,7 @@ public class TransactionSummaryController {
     private final TransactionSummaryService transactionSummaryService;
 
     @GetMapping()
-    public ResponseEntity<List<MonthlySummaryDTO>> getRecent6MonthsSummary(
+    public ResponseEntity<SummaryResponseDTO> getRecent6MonthsSummary(
         @RequestParam(required = false) String base, // /summary?base=2025-09
         @AuthenticationPrincipal CustomOAuth2User customUser
     ) {

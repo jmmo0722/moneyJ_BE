@@ -4,6 +4,7 @@ package com.project.moneyj.analysis.service;
 import com.project.moneyj.analysis.domain.TransactionSummary;
 import com.project.moneyj.analysis.dto.MonthlySummaryDTO;
 import com.project.moneyj.analysis.dto.MonthlySummaryDTO.CategorySummaryDTO;
+import com.project.moneyj.analysis.dto.SummaryResponseDTO;
 import com.project.moneyj.analysis.repository.TransactionSummaryRepository;
 import com.project.moneyj.transaction.domain.Transaction;
 import com.project.moneyj.transaction.domain.TransactionCategory;
@@ -35,7 +36,18 @@ public class TransactionSummaryService {
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
-    public List<MonthlySummaryDTO> getRecent6MonthsSummary(Long userId, String baseYearMonth) {
+    public SummaryResponseDTO getRecent6MonthsSummary(Long userId, String baseYearMonth) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
+        boolean idCardConnected = user.isCardConnected();
+
+        // 6개월 요약 데이터 리스트를 조회
+        List<MonthlySummaryDTO> summaries = getMonthlySummary(userId, baseYearMonth);
+
+        return SummaryResponseDTO.of(idCardConnected, summaries);
+    }
+
+    private List<MonthlySummaryDTO> getMonthlySummary(Long userId, String baseYearMonth) {
         YearMonth base = YearMonth.parse(baseYearMonth);
         // 최근 6개월 리스트
         List<YearMonth> last6Months = IntStream.rangeClosed(0, 5)
