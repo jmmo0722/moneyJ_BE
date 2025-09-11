@@ -19,4 +19,10 @@ public interface TripMemberRepository extends JpaRepository<TripMember, Long> {
 
     // 여행 플랜 삭제
     Optional<TripMember> findByTripPlanAndUser(TripPlan tripPlan, User user);
+
+
+    @Query("SELECT tm FROM TripMember tm WHERE tm.user.userId = :userId")
+    Optional<TripMember> findByUserId(@Param("userId") Long userId);
+
+    boolean existsByUser_UserId(Long userId);
 }

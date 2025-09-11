@@ -47,7 +47,7 @@ public class TransactionSummaryService {
         return SummaryResponseDTO.of(idCardConnected, summaries);
     }
 
-    private List<MonthlySummaryDTO> getMonthlySummary(Long userId, String baseYearMonth) {
+    public List<MonthlySummaryDTO> getMonthlySummary(Long userId, String baseYearMonth) {
         YearMonth base = YearMonth.parse(baseYearMonth);
         // 최근 6개월 리스트
         List<YearMonth> last6Months = IntStream.rangeClosed(0, 5)
