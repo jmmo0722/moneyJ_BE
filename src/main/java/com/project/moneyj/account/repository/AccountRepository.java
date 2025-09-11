@@ -27,4 +27,8 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Optional<Account> findByUser_UserIdAndOrganizationCode(Long userId, String organizationCode);
 
+    @Query("SELECT a FROM Account a WHERE a.user.userId = :userId AND a.tripPlan.tripPlanId = :tripPlanId")
+    Optional<Account> findByUserIdAndTripPlanId(@Param("userId") Long userId,
+                                                @Param("tripPlanId") Long tripPlanId);
+
 }

@@ -10,4 +10,5 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     // 특정 유저의 특정 기간 거래 내역 조회
     List<Transaction> findByUser_UserIdAndUsedDateTimeBetween(Long userId, LocalDateTime from, LocalDateTime to);
 
+    boolean existsByUser_UserId(Long userId);
 }

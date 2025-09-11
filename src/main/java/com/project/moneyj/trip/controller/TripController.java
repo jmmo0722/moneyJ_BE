@@ -2,6 +2,7 @@ package com.project.moneyj.trip.controller;
 
 
 import com.project.moneyj.auth.dto.CustomOAuth2User;
+import com.project.moneyj.transaction.service.TransactionService;
 import com.project.moneyj.trip.dto.*;
 import com.project.moneyj.trip.dto.TripPlanDetailResponseDTO;
 import com.project.moneyj.trip.dto.TripPlanListResponseDTO;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 public class TripController {
 
     private final TripPlanService tripPlanService;
+    private final TransactionService transactionService;
 
     /**
      * 여행 플랜 생성
@@ -49,10 +51,11 @@ public class TripController {
      * 여행 플랜 상세 조회
      */
     @GetMapping("/{planId}")
-    public ResponseEntity<TripPlanDetailResponseDTO> getPlanDetail(
+    public ResponseEntity<?> getPlanDetail(
             @PathVariable Long planId,
             @AuthenticationPrincipal CustomOAuth2User customUser) {
         Long userId = customUser.getUserId();
+        tripPlanService.checkSavingTip(userId, planId);
         return ResponseEntity.ok(tripPlanService.getTripPlanDetail(planId, userId));
     }
 
