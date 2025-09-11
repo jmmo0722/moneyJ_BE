@@ -26,6 +26,10 @@ public class TransactionService {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new IllegalArgumentException("유저 없음"));
 
+        if (!user.isCardConnected()) {
+            user.connectCard();
+        }
+
         Map<String, Object> response = codefCardService.getCardApprovalList(userId, req);
         List<Map<String, Object>> data = (List<Map<String, Object>>) response.get("data");
 
