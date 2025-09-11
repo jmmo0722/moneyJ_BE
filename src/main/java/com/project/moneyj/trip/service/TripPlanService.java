@@ -10,7 +10,6 @@ import com.project.moneyj.account.domain.Account;
 import com.project.moneyj.account.repository.AccountRepository;
 import com.project.moneyj.trip.domain.TripMember;
 import com.project.moneyj.trip.domain.TripPlan;
-import com.project.moneyj.trip.dto.TripMemberDTO;
 import com.project.moneyj.trip.dto.TripPlanDetailResponseDTO;
 import com.project.moneyj.trip.dto.TripPlanListResponseDTO;
 import com.project.moneyj.trip.dto.TripPlanPatchRequestDTO;
@@ -62,7 +61,8 @@ public class TripPlanService {
                 .countryCode(requestDTO.getCountryCode())
                 .city(requestDTO.getCity())
                 .membersCount(members.size())
-                .duration(requestDTO.getDuration())
+                .days(requestDTO.getDays())
+                .nights(requestDTO.getNights())
                 .tripStartDate(requestDTO.getTripStartDate())
                 .tripEndDate(requestDTO.getTripEndDate())
                 .totalBudget(requestDTO.getTotalBudget())
@@ -76,18 +76,20 @@ public class TripPlanService {
         for (User user : members) {
             TripMember tripMember = new TripMember();
             tripMember.enrollTripMember(user, saved);
+
+            // 모든 멤버 같은 카테고리 및 금액 등록
+            for(CategoryDTO categoryDTO : requestDTO.getCategoryDTOList()){
+                Category category = Category.builder()
+                        .categoryName(categoryDTO.getCategoryName())
+                        .amount(categoryDTO.getAmount())
+                        .tripPlan(saved)
+                        .tripMember(tripMember)
+                        .build();
+
+                tripMember.getCategoryList().add(category);
+            }
+
             tripMemberRepository.save(tripMember);
-        }
-
-        // 카테고리 등록
-        for(CategoryDTO categoryDTO : requestDTO.getCategoryDTOList()){
-            Category category = Category.builder()
-                    .categoryName(categoryDTO.getCategoryName())
-                    .amount(categoryDTO.getAmount())
-                    .tripPlan(saved)
-                    .build();
-
-            saved.getCategoryList().add(category);
         }
 
         return new TripPlanResponseDTO(saved.getTripPlanId(), "여행 플랜 생성 완료");
@@ -120,8 +122,13 @@ public class TripPlanService {
             throw new IllegalArgumentException("해당 플랜에 멤버가 존재하지 않습니다!");
         }
 
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자"));
+        TripMember tripMember = tripMemberRepository.findByTripPlanAndUser(plan, user)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 여행 멤버: " + user.getEmail()));;
+
         // Category 가 한 개도 없는 경우
-        if (plan.getCategoryList().isEmpty()) {
+        if (tripMember.getCategoryList().isEmpty()) {
             throw new IllegalArgumentException("해당 플랜에 아직 카테고리가 없습니다.");
         }
 
@@ -135,15 +142,17 @@ public class TripPlanService {
         if(tips.isEmpty()) throw new IllegalArgumentException("여행 팁이 존재하지 않습니다!");
 
         // 카테고리 조회 및 DTO 변환
-        List<Category> categoryList = categoryRepository.findByTripPlanId(planId);
-        List<CategoryDTO> categoryDTOList = categoryList.stream().map(CategoryDTO::fromEntity).toList();
+        List<Category> categoryList = tripMember.getCategoryList();
+        List<CategoryDTO> categoryDTOList = categoryList.stream()
+                .map(category -> CategoryDTO.fromEntity(category, planId))
+                .toList();
 
 
         return TripPlanDetailResponseDTO.fromEntity(plan, savings, tips, categoryDTOList);
     }
 
     /**
-     * 여행 플랜 수정
+     * 여행 플랜 수정 (카테고리 제외)
      */
     @Transactional
     public TripPlanResponseDTO patchPlan(Long planId, TripPlanPatchRequestDTO requestDTO) {
@@ -170,6 +179,10 @@ public class TripPlanService {
         for(String email : addDTO.getEmail()){
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다!" + email));
+
+            if(tripMemberRepository.findByTripPlanAndUser(existingPlan, user).isPresent()){
+                throw new IllegalArgumentException("이미 여행에 참여하고 있는 멤버입니다! " + email);
+            }
 
             TripMember tripMember = TripMember.builder()
                     .user(user)
@@ -256,5 +269,49 @@ public class TripPlanService {
                 .user(promptText)
                 .call()
                 .entity(TripBudgetResponseDTO.class);
+    }
+
+    /**
+     * 여행 플랜 카테고리 목표 달성 여부 변경 메소드
+     */
+    @Transactional
+    public isConsumedResponseDTO switchIsConsumed(isConsumedRequestDTO request, Long userId) {
+
+        TripPlan tripPlan = tripPlanRepository.findByTripPlanId(request.getTripPlanId());
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다!"));
+
+        TripMember tripMember = tripMemberRepository.findByTripPlanAndUser(tripPlan, user)
+                .orElseThrow(() -> new IllegalArgumentException("현재 사용자는 해당 여행의 멤버가 아닙니다!"));
+
+        Category category = categoryRepository.findByCategoryNameAndMemberIdNative(request.getCategoryName(), tripMember.getTripMemberId())
+                .orElseThrow(() -> new IllegalArgumentException("카테고리가 존재하지 않습니다!"));
+
+        category.changeConsumptionStatus(request.isConsumed());
+
+        return new isConsumedResponseDTO("카테고리 목표 달성 여부가 반영 되었습니다.", category.isConsumed());
+    }
+
+    /**
+     * 카테고리 변경
+     * 한명이 변경하면 모든 사용자의 카테고리 변경
+     */
+    @Transactional
+    public CategoryResponseDTO patchCategory(CategoryDTO request, Long userId) {
+
+        TripPlan tripPlan = tripPlanRepository.findByTripPlanId(request.getTripPlanId());
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다!"));
+
+        List<TripMember> tripMemberList = tripMemberRepository.findTripMemberByTripPlanId(request.getTripPlanId());
+
+        for (TripMember tripMember : tripMemberList) {
+            Category category = categoryRepository.findByCategoryNameAndMemberIdNative(request.getCategoryName(), tripMember.getTripMemberId())
+                    .orElseThrow(() -> new IllegalArgumentException("카테고리가 존재하지 않습니다!"));
+
+            category.update(request);
+        }
+
+        return new CategoryResponseDTO("여행 멤버들의 카테고리가 변경 되었습니다.", request.getCategoryName(), request.getAmount());
     }
 }

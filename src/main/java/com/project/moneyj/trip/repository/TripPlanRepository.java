@@ -29,4 +29,6 @@ public interface TripPlanRepository extends JpaRepository<TripPlan, Long> {
         where tp.tripPlanId = :planId
         """)
     Optional<TripPlan> findDetailById(@Param("planId") Long planId);
+
+    TripPlan findByTripPlanId(Long tripPlanId);
 }

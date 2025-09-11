@@ -1,6 +1,5 @@
 package com.project.moneyj.trip.dto;
 
-import com.project.moneyj.trip.domain.TripPlan;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -31,7 +30,10 @@ public class TripPlanRequestDTO {
     private List<CategoryDTO> categoryDTOList;
 
     @Min(1)
-    private Integer duration;
+    private Integer days;
+
+    @Min(1)
+    private Integer nights;
 
     @NotNull
     private LocalDate tripStartDate;

@@ -32,6 +32,10 @@ public class TripMember {
     @OneToMany(mappedBy = "tripMember", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TripSavingPhrase> tripSavingPhrase = new ArrayList<>();
 
+    @OneToMany(mappedBy = "tripMember", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<Category> categoryList = new ArrayList<>();
+
     // 여행 플랜 등록 연관관계 메소드
     public void enrollTripMember(User user, TripPlan tripPlan){
         this.user = user;
@@ -50,4 +54,25 @@ public class TripMember {
         this.tripPlan = tripPlan;
         tripPlan.getTripMemberList().add(this);
     }
+
+    public void switchIsConsumed(boolean consumed) {
+        for (Category category : categoryList) {
+            category.changeConsumptionStatus(consumed);
+        }
+    }
+
+//            if (patchRequestDTO.getCategoryDTOList() != null) {
+//
+//        List<Category> categoryList = this.categoryList;
+//        List<CategoryDTO> categoryDTOList = patchRequestDTO.getCategoryDTOList();
+//
+//        for (int i = 0; i < categoryDTOList.size(); i++) {
+//
+//            Category existingCategory = categoryList.get(i);
+//            if(existingCategory.isConsumed()) continue;
+//
+//            CategoryDTO dto = categoryDTOList.get(i);
+//            existingCategory.update(dto);
+//        }
+//    }
 }

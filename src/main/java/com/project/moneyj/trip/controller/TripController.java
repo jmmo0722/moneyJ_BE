@@ -16,7 +16,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -116,4 +115,25 @@ public class TripController {
         TripBudgetResponseDTO budget = tripPlanService.getTripBudget(request);
         return ResponseEntity.ok(budget);
     }
+
+    // 여행 플랜 카테고리 목표 달성 여부 변경
+    @PostMapping("/isconsumed")
+    public ResponseEntity<isConsumedResponseDTO> switchIsConsumed(
+            @AuthenticationPrincipal CustomOAuth2User customUser,
+            @RequestBody isConsumedRequestDTO request) {
+
+        Long userId = customUser.getUserId();
+        return ResponseEntity.ok(tripPlanService.switchIsConsumed(request, userId));
+    }
+
+    // 카테고리 변경
+    @PatchMapping("/category")
+    public ResponseEntity<CategoryResponseDTO> patchCategory(
+            @AuthenticationPrincipal CustomOAuth2User customUser,
+            @RequestBody CategoryDTO request) {
+
+        Long userId = customUser.getUserId();
+        return ResponseEntity.ok(tripPlanService.patchCategory(request, userId));
+    }
+
 }
