@@ -417,7 +417,7 @@ public class TripPlanService {
         SavingsTipResponseDTO response = chatClient
                 .prompt()
                 .system("너는 저축 조언 전문가야. 사용자의 소비 내역을 분석해서 맞춤형 저축 팁을 알려줘. \\\n" +
-                        "반드시 친근하면서도 존댓말을 사용해서 답변해.")
+                        "반드시 예시를 참고하여 구어체를 사용하여 답변해.")
                 .user(promptText)
                 .call()
                 .entity(SavingsTipResponseDTO.class);
