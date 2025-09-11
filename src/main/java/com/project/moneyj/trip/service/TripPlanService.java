@@ -202,6 +202,10 @@ public class TripPlanService {
 
             tripMember.addTripMember(existingPlan);
         }
+
+        List<TripMember> tripMemberList = tripMemberRepository.findTripMemberByTripPlanId(planId);
+        existingPlan.updateMembersCount(tripMemberList.size());
+
         return new TripPlanResponseDTO(planId, "멤버 추가 완료");
 
     }
