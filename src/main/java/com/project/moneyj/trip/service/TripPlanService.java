@@ -293,25 +293,55 @@ public class TripPlanService {
     }
 
     /**
+     * 여행 플랜 카테고리 목표 달성 조회
+     */
+    @Transactional
+    public List<CategoryDTO> getIsConsumed(Long planId, Long userId) {
+
+        TripPlan tripPlan = tripPlanRepository.findByTripPlanId(planId);
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다!"));
+
+        TripMember tripMember = tripMemberRepository.findByTripPlanAndUser(tripPlan, user)
+                .orElseThrow(() -> new IllegalArgumentException("현재 사용자는 해당 여행의 멤버가 아닙니다!"));
+
+        List<Category> categoriesList = categoryRepository.findByTripPlanIdAndTripMemberId(planId, userId);
+
+        return categoriesList.stream().map(category -> CategoryDTO.fromEntity(category, planId)).toList();
+    }
+
+    /**
      * 카테고리 변경
      * 한명이 변경하면 모든 사용자의 카테고리 변경
      */
     @Transactional
-    public CategoryResponseDTO patchCategory(CategoryDTO request, Long userId) {
+    public CategoryResponseDTO patchCategory(CategoryListRequestDTO request, Long userId) {
 
-        TripPlan tripPlan = tripPlanRepository.findByTripPlanId(request.getTripPlanId());
+        TripPlan tripPlan = tripPlanRepository.findByTripPlanId(request.getCategoryDTOList().get(0).getTripPlanId());
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다!"));
 
-        List<TripMember> tripMemberList = tripMemberRepository.findTripMemberByTripPlanId(request.getTripPlanId());
+        List<TripMember> tripMemberList = tripMemberRepository.findTripMemberByTripPlanId(request.getCategoryDTOList().get(0).getTripPlanId());
 
-        for (TripMember tripMember : tripMemberList) {
-            Category category = categoryRepository.findByCategoryNameAndMemberIdNative(request.getCategoryName(), tripMember.getTripMemberId())
-                    .orElseThrow(() -> new IllegalArgumentException("카테고리가 존재하지 않습니다!"));
 
-            category.update(request);
+        // 카테고리 전체 순환
+        for(CategoryDTO categoryDTO : request.getCategoryDTOList()){
+
+            // 여행 멤버 전체 순환
+            for (TripMember tripMember : tripMemberList) {
+
+                Category category = categoryRepository.findByCategoryNameAndMemberIdNative(categoryDTO.getCategoryName(), tripMember.getTripMemberId())
+                        .orElseThrow(() -> new IllegalArgumentException("카테고리가 존재하지 않습니다!"));
+
+                category.update(categoryDTO);
+            }
+
         }
 
-        return new CategoryResponseDTO("여행 멤버들의 카테고리가 변경 되었습니다.", request.getCategoryName(), request.getAmount());
+        return new CategoryResponseDTO(
+                "여행 멤버들의 카테고리가 변경 되었습니다.",
+                request.getCategoryDTOList().get(0).getCategoryName(),
+                request.getCategoryDTOList().get(0).getAmount()
+        );
     }
 }
