@@ -35,7 +35,7 @@ import java.util.Arrays;
 public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
-    private final com.project.moneyj.auth.util.JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     @Value("${spring.redirect.frontend-url}")
     private String frontendUrl;
@@ -61,26 +61,17 @@ public class SecurityConfig {
                                 .userService(customOAuth2UserService)
                         )
                         .successHandler((request, response, authentication) -> {
-                            // 로그인 성공 시 JWT 토큰 생성 및 반환
                             CustomOAuth2User customUser = (CustomOAuth2User) authentication.getPrincipal();
                             String jwtToken = jwtUtil.generateToken(customUser.getName());
 
-                            // JSON 응답으로 토큰과 첫 로그인 여부 반환
-                            response.setContentType("application/json;charset=UTF-8");
-                            response.setStatus(HttpStatus.OK.value());
+                            String redirectPath = customUser.isFirstLogin() ? "/agree" : "/home";
+                            String redirectUrl = frontendUrl + redirectPath +
+                                    "?token=" + jwtToken +
+                                    "&isFirstLogin=" + customUser.isFirstLogin();
 
-                            TokenResponse tokenResponse = new TokenResponse(
-                                    jwtToken,
-                                    customUser.isFirstLogin()
-                            );
-
-                            try (PrintWriter writer = response.getWriter()) {
-                                writer.write(new ObjectMapper().writeValueAsString(tokenResponse));
-                                writer.flush();
-                            } catch (IOException e) {
-                                // TODO: 예외 처리
-                            }
+                            response.sendRedirect(redirectUrl);
                         })
+
                         .failureHandler((request, response, exception) -> {
                             // 로그인 실패 핸들러는 기존과 동일
                             response.setContentType("application/json;charset=UTF-8");
