@@ -350,6 +350,11 @@ public class TripPlanService {
 
         }
 
+        Integer sum = 0;
+        for (CategoryDTO categoryDTO : request.getCategoryDTOList()) sum = categoryDTO.getAmount();
+
+        tripPlan.updateTotalBudget(sum);
+
         return new CategoryResponseDTO(
                 "여행 멤버들의 카테고리가 변경 되었습니다.",
                 request.getCategoryDTOList().get(0).getCategoryName(),
