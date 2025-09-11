@@ -1,5 +1,6 @@
-package com.project.moneyj.transaction.domain;
+package com.project.moneyj.analysis.domain;
 
+import com.project.moneyj.transaction.domain.TransactionCategory;
 import com.project.moneyj.user.domain.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -11,7 +12,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+import jakarta.persistence.UniqueConstraint;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,11 +24,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "transaction")
-public class Transaction {
-
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long transaction_id;
+@Table(name = "transaction_summary", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"user_id", "yearMonth", "transactionCategory"})
+})
+public class TransactionSummary {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long transaction_summary_id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -35,22 +39,8 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     private TransactionCategory transactionCategory;
 
-    private LocalDateTime usedDateTime; // resUsedDate + resUsedTime
-
-    private Integer usedAmount;
-
-    private String storeName;
-    private String storeCorpNo;
-    private String storeAddr;
-    private String storeNo;
-    private String storeType;
-    private String approvalNo;
-
-    private LocalDateTime updateAt;
-
-    // 연관관계 메소드
-    public void addTransaction(User user){
-        this.user = user;
-        user.getTransactionList().add(this);
-    }
+    private String summaryMonth;
+    private Integer totalAmount = 0;
+    private Integer transactionCount = 0;
+    private LocalDate updateAt;
 }

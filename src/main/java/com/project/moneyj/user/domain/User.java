@@ -44,6 +44,9 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    @Column(nullable = false)
+    private boolean cardConnected = false;
+
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transaction> transactionList = new ArrayList<>();
@@ -56,6 +59,10 @@ public class User {
         this.email = email;
         this.profileImage = profileImage;
         this.role = role;
+    }
+
+    public void connectCard() {
+        this.cardConnected = true;
     }
 
 }

@@ -128,4 +128,10 @@ public class AccountService {
         String lastPart = accountNumber.substring(accountNumber.length() - 4);
         return firstPart + "****" + lastPart;
     }
+    @Transactional(readOnly = true)
+    public Integer getUserBalance(Long userId) {
+        return accountRepository.findByUser_UserId(userId)
+                .map(Account::getBalance)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저의 계좌가 존재하지 않습니다."));
+    }
 }

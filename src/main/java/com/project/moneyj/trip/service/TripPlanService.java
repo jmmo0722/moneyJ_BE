@@ -1,9 +1,11 @@
 package com.project.moneyj.trip.service;
 
 
+import com.project.moneyj.account.Service.AccountService;
+import com.project.moneyj.analysis.dto.MonthlySummaryDTO;
+import com.project.moneyj.analysis.service.TransactionSummaryService;
 import com.project.moneyj.openai.util.PromptLoader;
-import com.project.moneyj.trip.domain.Category;
-import com.project.moneyj.trip.domain.MemberRole;
+import com.project.moneyj.trip.domain.*;
 import com.project.moneyj.trip.dto.*;
 import com.project.moneyj.trip.repository.*;
 import com.project.moneyj.account.domain.Account;
@@ -26,7 +28,13 @@ import com.project.moneyj.user.domain.User;
 import com.project.moneyj.user.repository.UserRepository;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
@@ -46,12 +54,14 @@ public class TripPlanService {
     private final TripSavingPhraseRepository tripSavingPhraseRepository;
     private final AccountRepository accountRepository;
     private final ChatClient chatClient;
+    private final AccountService accountService;
+    private final TransactionSummaryService transactionSummaryService;
 
     /**
      * 여행 플랜 생성
      */
     @Transactional
-    public TripPlanResponseDTO createTripPlans(TripPlanRequestDTO requestDTO){
+    public TripPlanResponseDTO createTripPlans(TripPlanRequestDTO requestDTO) {
 
         // 멤버들 id 조회
         List<User> members = userRepository.findAllByEmailIn(requestDTO.getTripMemberEmail());
@@ -78,7 +88,7 @@ public class TripPlanService {
             tripMember.enrollTripMember(user, saved);
 
             // 모든 멤버 같은 카테고리 및 금액 등록
-            for(CategoryDTO categoryDTO : requestDTO.getCategoryDTOList()){
+            for (CategoryDTO categoryDTO : requestDTO.getCategoryDTOList()) {
                 Category category = Category.builder()
                         .categoryName(categoryDTO.getCategoryName())
                         .amount(categoryDTO.getAmount())
@@ -125,7 +135,8 @@ public class TripPlanService {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자"));
         TripMember tripMember = tripMemberRepository.findByTripPlanAndUser(plan, user)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 여행 멤버: " + user.getEmail()));;
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 여행 멤버: " + user.getEmail()));
+        ;
 
         // Category 가 한 개도 없는 경우
         if (tripMember.getCategoryList().isEmpty()) {
@@ -135,11 +146,11 @@ public class TripPlanService {
         // 문구 조회
         // 저축 플랜 문구
         List<String> savings = tripSavingPhraseRepository.findAllContentByMemberId(userId);
-        if(savings.isEmpty()) throw new IllegalArgumentException("저축 플랜이 존재하지 않습니다!");
+        if (savings.isEmpty()) savings = new ArrayList<>();
 
         // 여행 팁 문구
         List<String> tips = tripTipRepository.findAllByCountry(plan.getCountry());
-        if(tips.isEmpty()) throw new IllegalArgumentException("여행 팁이 존재하지 않습니다!");
+        if (tips.isEmpty()) tips = new ArrayList<>();
 
         // 카테고리 조회 및 DTO 변환
         List<Category> categoryList = tripMember.getCategoryList();
@@ -169,18 +180,18 @@ public class TripPlanService {
      * 여행 멤버 추가
      */
     @Transactional
-    public TripPlanResponseDTO addTripMember(Long planId, AddTripMemberRequestDTO addDTO){
+    public TripPlanResponseDTO addTripMember(Long planId, AddTripMemberRequestDTO addDTO) {
 
         // 여행 플랜 조회
         TripPlan existingPlan = tripPlanRepository.findById(planId)
                 .orElseThrow(() -> new IllegalArgumentException("여행 플랜을 찾을 수 없습니다!" + planId));
 
         // 사용자 조회
-        for(String email : addDTO.getEmail()){
+        for (String email : addDTO.getEmail()) {
             User user = userRepository.findByEmail(email)
                     .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다!" + email));
 
-            if(tripMemberRepository.findByTripPlanAndUser(existingPlan, user).isPresent()){
+            if (tripMemberRepository.findByTripPlanAndUser(existingPlan, user).isPresent()) {
                 throw new IllegalArgumentException("이미 여행에 참여하고 있는 멤버입니다! " + email);
             }
 
@@ -225,27 +236,28 @@ public class TripPlanService {
         List<Account> accounts = accountRepository.findByTripPlanId(tripPlanId);
 
         return accounts.stream()
-            .map(a -> {
-                double rawProgress = 0.0;
-                TripPlan tp = a.getTripPlan();
-                if (tp != null && tp.getTotalBudget() != null && tp.getTotalBudget() > 0) {
-                    rawProgress = (a.getBalance() * 100.0) / tp.getTotalBudget();
-                }
-                // 소수점 1자리로 반올림
-                double progress = new BigDecimal(rawProgress)
-                    .setScale(1, RoundingMode.HALF_UP)
-                    .doubleValue();
+                .map(a -> {
+                    double rawProgress = 0.0;
+                    TripPlan tp = a.getTripPlan();
+                    if (tp != null && tp.getTotalBudget() != null && tp.getTotalBudget() > 0) {
+                        rawProgress = (a.getBalance() * 100.0) / tp.getTotalBudget();
+                    }
+                    // 소수점 1자리로 반올림
+                    double progress = new BigDecimal(rawProgress)
+                            .setScale(1, RoundingMode.HALF_UP)
+                            .doubleValue();
 
-                return new UserBalanceResponseDTO(
-                    a.getUser().getUserId(),
-                    a.getUser().getNickname(),
-                    a.getUser().getProfileImage(),
-                    a.getBalance(),
-                    progress
-                );
-            })
-            .toList();
+                    return new UserBalanceResponseDTO(
+                            a.getUser().getUserId(),
+                            a.getUser().getNickname(),
+                            a.getUser().getProfileImage(),
+                            a.getBalance(),
+                            progress
+                    );
+                })
+                .toList();
     }
+
     /**
      * 여행 경비 계산 관련 Prompt
      */
@@ -293,25 +305,154 @@ public class TripPlanService {
     }
 
     /**
+     * 여행 플랜 카테고리 목표 달성 조회
+     */
+    @Transactional
+    public List<CategoryDTO> getIsConsumed(Long planId, Long userId) {
+
+        TripPlan tripPlan = tripPlanRepository.findByTripPlanId(planId);
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다!"));
+
+        TripMember tripMember = tripMemberRepository.findByTripPlanAndUser(tripPlan, user)
+                .orElseThrow(() -> new IllegalArgumentException("현재 사용자는 해당 여행의 멤버가 아닙니다!"));
+
+        List<Category> categoriesList = categoryRepository.findByTripPlanIdAndTripMemberId(planId, userId);
+
+        return categoriesList.stream().map(category -> CategoryDTO.fromEntity(category, planId)).toList();
+    }
+
+    /**
      * 카테고리 변경
      * 한명이 변경하면 모든 사용자의 카테고리 변경
      */
     @Transactional
-    public CategoryResponseDTO patchCategory(CategoryDTO request, Long userId) {
+    public CategoryResponseDTO patchCategory(CategoryListRequestDTO request, Long userId) {
 
-        TripPlan tripPlan = tripPlanRepository.findByTripPlanId(request.getTripPlanId());
+        TripPlan tripPlan = tripPlanRepository.findByTripPlanId(request.getCategoryDTOList().get(0).getTripPlanId());
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다!"));
 
-        List<TripMember> tripMemberList = tripMemberRepository.findTripMemberByTripPlanId(request.getTripPlanId());
+        List<TripMember> tripMemberList = tripMemberRepository.findTripMemberByTripPlanId(request.getCategoryDTOList().get(0).getTripPlanId());
 
-        for (TripMember tripMember : tripMemberList) {
-            Category category = categoryRepository.findByCategoryNameAndMemberIdNative(request.getCategoryName(), tripMember.getTripMemberId())
-                    .orElseThrow(() -> new IllegalArgumentException("카테고리가 존재하지 않습니다!"));
 
-            category.update(request);
+        // 카테고리 전체 순환
+        for (CategoryDTO categoryDTO : request.getCategoryDTOList()) {
+
+            // 여행 멤버 전체 순환
+            for (TripMember tripMember : tripMemberList) {
+
+                Category category = categoryRepository.findByCategoryNameAndMemberIdNative(categoryDTO.getCategoryName(), tripMember.getTripMemberId())
+                        .orElseThrow(() -> new IllegalArgumentException("카테고리가 존재하지 않습니다!"));
+
+                category.update(categoryDTO);
+            }
+
         }
 
-        return new CategoryResponseDTO("여행 멤버들의 카테고리가 변경 되었습니다.", request.getCategoryName(), request.getAmount());
+        Integer sum = 0;
+        for (CategoryDTO categoryDTO : request.getCategoryDTOList()) sum = categoryDTO.getAmount();
+
+        tripPlan.updateTotalBudget(sum);
+
+        return new CategoryResponseDTO(
+                "여행 멤버들의 카테고리가 변경 되었습니다.",
+                request.getCategoryDTOList().get(0).getCategoryName(),
+                request.getCategoryDTOList().get(0).getAmount()
+        );
+    }
+
+    /**
+     * 저축 팁 관련 Prompt 및 저축 Tip 생성
+     */
+    @Transactional
+    public void addSavingsTip(Long userId, Long planId) {
+        // 1. 현재 저축 금액 조회
+        int currentSavings = accountService.getUserBalance(userId);
+
+        // 2. 여행 플랜 예산 조회 (목표 저축 금액)
+        TripPlan tripPlan = tripPlanRepository.findById(planId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 플랜이 존재하지 않습니다."));
+        int tripBudget = tripPlan.getTotalBudget();
+
+        // 3. 최근 6개월 소비 내역 요약
+        String baseYearMonth = YearMonth.now().toString(); // 예: "2025-09"
+        List<MonthlySummaryDTO> summaries = transactionSummaryService.getMonthlySummary(userId, baseYearMonth);
+
+        // 카테고리별 합산 (Map<Category, TotalAmount>)
+        Map<String, Integer> categoryTotals = new HashMap<>();
+        Map<String, Integer> categoryCounts = new HashMap<>();
+
+        for (MonthlySummaryDTO monthSummary : summaries) {
+            for (MonthlySummaryDTO.CategorySummaryDTO cat : monthSummary.getCategories()) {
+                categoryTotals.merge(cat.getCategory(), cat.getTotalAmount(), Integer::sum);
+                categoryCounts.merge(cat.getCategory(), cat.getTransactionCount(), Integer::sum);
+            }
+        }
+
+        // 카테고리별 평균 소비액 계산
+        Map<String, Integer> categoryAverages = categoryTotals.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> e.getValue() / summaries.size() // 6개월 평균
+                ));
+
+        // 프롬프트용 문자열 (평균 소비 상위 5개 카테고리)
+        String transactionSummary = categoryAverages.entrySet().stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .limit(5)
+                .map(e -> String.format("%s : %d", e.getKey(), e.getValue()))
+                .collect(Collectors.joining("\n"));
+
+        // 4. 프롬프트 작성
+        String promptTemplate = PromptLoader.load("/prompts/savings-tip.txt");
+        String promptText = String.format(
+                promptTemplate,
+                currentSavings,   // 현재 저축 금액
+                tripBudget,       // 목표 저축 금액
+                transactionSummary // 6개월 평균 소비 내역
+        );
+
+        // 5. GPT 호출
+        SavingsTipResponseDTO response = chatClient
+                .prompt()
+                .system("너는 저축 조언 전문가야. 사용자의 소비 내역을 분석해서 맞춤형 저축 팁을 알려줘. \\\n" +
+                        "반드시 예시를 참고하여 구어체를 사용하여 답변해.")
+                .user(promptText)
+                .call()
+                .entity(SavingsTipResponseDTO.class);
+
+        // 6. TripMember 조회 후 DB 저장
+        TripMember tripMember = tripMemberRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("TripMember가 없습니다."));
+
+        for (String tip : response.getMessages()) {
+            TripSavingPhrase phrase = TripSavingPhrase.builder()
+                    .tripMember(tripMember)
+                    .content(tip)
+                    .build();
+            tripSavingPhraseRepository.save(phrase);
+        }
+    }
+
+    @Transactional
+    public void checkSavingTip(Long userId, Long planId) {
+
+        // 1. 플랜 참여 여부 확인
+        boolean checkPlan = tripMemberRepository.existsByUser_UserId(userId);
+
+        // 2. 계좌 확인
+        boolean checkAccount = accountRepository.findByUserIdAndTripPlanId(userId, planId).isPresent();
+
+        // 3. 카드 확인
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자 없음!"));
+        boolean checkCard = user.isCardConnected();
+
+        // 4. 세 조건이 모두 true일 때만 실행
+        if (checkPlan && checkAccount && checkCard) {
+            addSavingsTip(userId, planId);
+        }
     }
 }
+

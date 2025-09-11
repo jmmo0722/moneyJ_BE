@@ -21,11 +21,16 @@ public class CategoryDTO {
     @NotNull @PositiveOrZero
     private Integer amount;
 
+    @NotNull
+    private boolean isConsumed;
+
 
     public static CategoryDTO fromEntity(Category category, Long tripPlanId){
         return CategoryDTO.builder()
+                .tripPlanId(tripPlanId)
                 .categoryName(category.getCategoryName())
                 .amount(category.getAmount())
+                .isConsumed(category.isConsumed())
                 .build();
     }
 }
