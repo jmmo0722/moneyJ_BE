@@ -1,4 +1,5 @@
 # ✈️ Money J – 여행을 위한 SNPL(선저축·후구매) 금융 비서
+![money J](https://github.com/user-attachments/assets/fd62a9ac-3839-4866-9aa8-b4ff3da83c38)
 
 > “가고 싶은 여행을, 빚이 아닌 저축으로 준비하자.”
 > 
