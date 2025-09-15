@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  app:
+    image: moneyj:latest
+    ports:
+      - "8080:8080"
+    # .env 파일의 내용을 자동으로 읽어서 컨테이너에 주입해줍니다.
+    env_file:
+      - ./.env
+    # 개별 변수를 직접 추가하거나, .env 파일의 값을 덮어쓸 수도 있습니다.
+    # environment:
+    #   - KAKAO_CLIENT_ID=abcdefg
